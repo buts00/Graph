@@ -1,9 +1,5 @@
 package graph
 
-type Node struct {
-	Value int
-}
-
 type Edge struct {
 	Source      int
 	Destination int
@@ -11,6 +7,5 @@ type Edge struct {
 }
 
 type Graph struct {
-	Nodes *[]Node
 	Edges *[]Edge
 }

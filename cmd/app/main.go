@@ -2,13 +2,12 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"github.com/buts00/Graph/internal/app"
+	"github.com/buts00/Graph/internal/app/apiserver"
 	"github.com/buts00/Graph/internal/config"
 	"github.com/buts00/Graph/internal/database"
-	"log"
-
 	_ "github.com/lib/pq"
+	"log"
+	"os"
 )
 
 var (
@@ -25,32 +24,27 @@ func main() {
 	flag.Parse()
 	cfg, err := config.LoadConfig(configPath)
 	if err != nil {
-		fmt.Printf("Error loading config: %v\n", err)
-		return
+		log.Fatal("Error loading config: ", err)
 	}
 
-	// connect to database
+	//connect to database
 	databaseCfg := cfg.Database
+	password := os.Getenv("PASSWORD_graph_db")
 	db, err := database.NewPostgresDB(databaseCfg.Host, databaseCfg.Port, databaseCfg.User,
-		databaseCfg.Password, databaseCfg.DbName)
+		password, databaseCfg.DbName)
 
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	defer func() {
 		if err = db.DB.Close(); err != nil {
 			log.Fatal(err, "problem with connection")
 		}
 	}()
 
-	// Print values
-	
-	if err = app.PrintNodes(db); err != nil {
+	// Start Server
+	if err := apiserver.Start(cfg.Server.BindAddr, db); err != nil {
 		log.Fatal(err)
 	}
-
-	if err = app.PrintEdges(db); err != nil {
-		log.Fatal(err)
-	}
-
 }
