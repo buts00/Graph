@@ -1,5 +1,3 @@
-
-
 function getData() {
     fetch('http://localhost:8080/graph')
         .then(response => {
@@ -25,12 +23,12 @@ function processData(data) {
 
     data.Edges.forEach(edge => {
         let color = '#6fd7ed'
-        if(data.InMst.includes(edge.Id)) color = 'orange'
+        if (data.InMst.includes(edge.Id)) color = 'orange'
         if (!nodes.get(edge.Source)) {
-            nodes.add({ id: edge.Source, label: edge.Source.toString()});
+            nodes.add({id: edge.Source, label: edge.Source.toString()});
         }
         if (!nodes.get(edge.Destination)) {
-            nodes.add({ id: edge.Destination, label: edge.Destination.toString() });
+            nodes.add({id: edge.Destination, label: edge.Destination.toString()});
         }
 
         edges.add({
@@ -66,7 +64,7 @@ function processData(data) {
     };
 
     let container = document.getElementById('network');
-    let graph = { nodes: nodes, edges: edges };
+    let graph = {nodes: nodes, edges: edges};
     let network = new vis.Network(container, graph, options);
 
 

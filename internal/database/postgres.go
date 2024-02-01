@@ -27,8 +27,8 @@ func Edges(db *PostgresDB) (graph.Graph, error) {
 	if err != nil {
 		return graph.Graph{}, err
 	}
-	var cur graph.Graph
 
+	var cur graph.Graph
 	for row.Next() {
 		var id, source, destination, weight int
 		if err := row.Scan(&id, &source, &destination, &weight); err != nil {
