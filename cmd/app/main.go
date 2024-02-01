@@ -47,4 +47,5 @@ func main() {
 	if err := apiserver.Start(cfg.Server.BindAddr, db); err != nil {
 		log.Fatal(err)
 	}
+
 }

@@ -22,21 +22,20 @@ func NewPostgresDB(host, port, user, password, dbName string) (*PostgresDB, erro
 	return &PostgresDB{db}, nil
 }
 
-func Edges(db *PostgresDB) (*[]graph.Edge, error) {
+func Edges(db *PostgresDB) (graph.Graph, error) {
 	row, err := db.DB.Query("SELECT * FROM edges")
 	if err != nil {
-		return nil, err
+		return graph.Graph{}, err
 	}
-	var cur []graph.Edge
+	var cur graph.Graph
 
 	for row.Next() {
 		var id, source, destination, weight int
 		if err := row.Scan(&id, &source, &destination, &weight); err != nil {
-			return nil, err
-
+			return graph.Graph{}, err
 		}
-		cur = append(cur, graph.Edge{Source: source, Destination: destination, Weight: weight})
+		cur.Edges = append(cur.Edges, graph.Edge{Id: id, Source: source, Destination: destination, Weight: weight})
 	}
 
-	return &cur, nil
+	return cur, nil
 }
