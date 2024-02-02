@@ -22,6 +22,41 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+func ReverseEdge(edge graph.Edge) graph.Edge {
+	temp := edge.Source
+	edge.Source = edge.Destination
+	edge.Destination = temp
+	return edge
+}
+
+func processEdge(db *database.PostgresDB, newEdge graph.Edge) error {
+	isEdgeExist, err := database.IsEdgeExist(db, newEdge)
+	if err != nil {
+		return fmt.Errorf("failed to check edge existence: %v", err)
+	}
+
+	reversedNewEdge := ReverseEdge(newEdge)
+	isReversedEdge, err := database.IsEdgeExist(db, reversedNewEdge)
+	if err != nil {
+		return fmt.Errorf("failed to check reversed edge existence: %v", err)
+	}
+
+	if isEdgeExist {
+		if err := database.DeleteEdge(db, newEdge); err != nil {
+			return fmt.Errorf("failed to remove edge: %v", err)
+		}
+	} else if isReversedEdge {
+		if err := database.DeleteEdge(db, reversedNewEdge); err != nil {
+			return fmt.Errorf("failed to remove reversed edge: %v", err)
+		}
+	} else {
+		if err := database.AddEdge(db, newEdge); err != nil {
+			return fmt.Errorf("failed to add edge: %v", err)
+		}
+	}
+
+	return nil
+}
 
 func handlePostRequest(writer http.ResponseWriter, request *http.Request, db *database.PostgresDB) {
 	body, err := io.ReadAll(request.Body)
@@ -36,8 +71,8 @@ func handlePostRequest(writer http.ResponseWriter, request *http.Request, db *da
 		return
 	}
 
-	if err = database.AddEdge(db, newEdge.Source, newEdge.Destination, newEdge.Weight); err != nil {
-		http.Error(writer, "Failed to add edge", http.StatusBadRequest)
+	if err := processEdge(db, newEdge); err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -71,7 +106,7 @@ func handleGetRequest(writer http.ResponseWriter, db *database.PostgresDB) {
 func GraphHandler(db *database.PostgresDB) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		writer.Header().Set("Access-Control-Allow-Origin", "*")
-		writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
 		writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		writer.Header().Set("Content-Type", "application/json")
 
@@ -91,6 +126,5 @@ func Start(port string, db *database.PostgresDB) error {
 	if err := http.ListenAndServe(port, router); err != nil {
 		return err
 	}
-
 	return nil
 }

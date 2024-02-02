@@ -21,6 +21,9 @@ let edges = new vis.DataSet();
 let network;
 
 function processData(data) {
+    console.log(data.Edges)
+    edges.clear();
+    nodes.clear();
     data.Edges.forEach(edge => {
         let color = '#6895D2'
         if (data.InMst.includes(edge.Id)) color = '#FF9843'
@@ -50,7 +53,6 @@ function processData(data) {
             },
             shape: 'circle',
             color: '#86bbf8',
-
 
         },
 
@@ -82,27 +84,64 @@ function isValidInput(value) {
     return /^[1-9]\d*$/.test(value);
 }
 
+function isEdgeAlreadyExists(startNode, endNode, weight) {
+    const existingEdge = edges.get({
+        filter: item => {
+            return (
+                item.from === startNode &&
+                item.to === endNode &&
+                item.label === weight.toString()
+            );
+        }
+    });
+    return existingEdge.length > 0;
+}
 
-function addNode() {
-    var fromValue = document.getElementById("from").value;
-    var toValue = document.getElementById("to").value;
-    var weightValue = document.getElementById("weight").value;
-    document.getElementById("from").value = "";
-    document.getElementById("to").value = "";
-    document.getElementById("weight").value = "";
 
-    if (!isValidInput(fromValue) || !isValidInput(toValue) || !isValidInput(weightValue)) {
+function addEdge() {
+    let edgeData = getDataFromInputs()
+    const { Source, Destination, Weight } = edgeData;
+    if (!isValidInput(Source) || !isValidInput(Destination) || !isValidInput(Weight) ) {
         alert("Please enter valid numeric values.");
         return;
     }
+    clearInputFields()
+    if (isEdgeAlreadyExists(Source,Destination,Weight) || isEdgeAlreadyExists(Destination, Source, Weight)) {
+        alert("This edge is already exist");
+        return;
+    }
+    sendDataToServer(edgeData)
+}
 
-    var edgeData = {
+function deleteEdge() {
+    let edgeData = getDataFromInputs()
+    const { Source, Destination, Weight } = edgeData;
+    if (!isValidInput(Source) || !isValidInput(Destination) || !isValidInput(Weight) ) {
+        alert("Please enter valid numeric values.");
+        return;
+    }
+    clearInputFields()
+    if (!isEdgeAlreadyExists(Source,Destination,Weight) && !isEdgeAlreadyExists(Destination, Source, Weight)) {
+        alert("There is not such edge");
+        return;
+    }
+
+    sendDataToServer(edgeData)
+}
+
+function  getDataFromInputs() {
+    let fromValue = document.getElementById("from").value;
+    let toValue = document.getElementById("to").value;
+    let weightValue = document.getElementById("weight").value;
+    edgeData = {
         Source: parseInt(fromValue),
         Destination: parseInt(toValue),
         Weight: parseInt(weightValue)
     };
+    return edgeData
+}
 
-
+function sendDataToServer(edgeData) {
     fetch('http://localhost:8080/graph', {
         method: 'POST',
         headers: {
@@ -110,23 +149,30 @@ function addNode() {
         },
         body: JSON.stringify(edgeData),
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
+        .then(handleResponse)
         .then(data => {
-            console.log('Data sent successfully:', data);
-            getData();
+                getData();
         })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
-
-
-
+        .catch(handleError);
 }
+
+function handleResponse(response) {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+}
+
+function handleError(error) {
+    console.error('There was a problem with the fetch operation:', error);
+}
+
+function clearInputFields() {
+    document.getElementById("from").value = "";
+    document.getElementById("to").value = "";
+    document.getElementById("weight").value = "";
+}
+
 
 
 

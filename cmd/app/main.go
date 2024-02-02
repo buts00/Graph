@@ -24,7 +24,7 @@ func main() {
 	flag.Parse()
 	cfg, err := config.LoadConfig(configPath)
 	if err != nil {
-		log.Fatal("Error loading config: ", err)
+		log.Fatal(err, "Error loading config: ")
 	}
 
 	//connect to database
@@ -34,7 +34,7 @@ func main() {
 		password, databaseCfg.DbName)
 
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(err, "cannot connect to database")
 	}
 
 	defer func() {

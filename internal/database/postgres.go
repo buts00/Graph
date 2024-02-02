@@ -40,11 +40,27 @@ func Edges(db *PostgresDB) (graph.Graph, error) {
 	return cur, nil
 }
 
-func AddEdge(db *PostgresDB, source, destination, weight int) error {
+func AddEdge(db *PostgresDB, edge graph.Edge) error {
 	if _, err := db.DB.Exec("INSERT INTO edges (source_node_id, destination_node_id, weight) VALUES ($1, $2, $3)",
-		source, destination, weight); err != nil {
+		edge.Source, edge.Destination, edge.Weight); err != nil {
 		return err
 	}
-
 	return nil
+}
+
+func DeleteEdge(db *PostgresDB, edge graph.Edge) error {
+	if _, err := db.DB.Exec("DELETE FROM edges WHERE source_node_id = $1 AND destination_node_id = $2  AND weight = $3;",
+		edge.Source, edge.Destination, edge.Weight); err != nil {
+		return err
+	}
+	return nil
+}
+
+func IsEdgeExist(db *PostgresDB, edge graph.Edge) (bool, error) {
+	var count int
+	if err := db.DB.QueryRow("SELECT COUNT(*) FROM edges WHERE source_node_id = $1 AND destination_node_id = $2 AND weight = $3;",
+		edge.Source, edge.Destination, edge.Weight).Scan(&count); err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
