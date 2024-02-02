@@ -39,3 +39,12 @@ func Edges(db *PostgresDB) (graph.Graph, error) {
 
 	return cur, nil
 }
+
+func AddEdge(db *PostgresDB, source, destination, weight int) error {
+	if _, err := db.DB.Exec("INSERT INTO edges (source_node_id, destination_node_id, weight) VALUES ($1, $2, $3)",
+		source, destination, weight); err != nil {
+		return err
+	}
+
+	return nil
+}

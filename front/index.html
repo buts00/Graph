@@ -9,17 +9,32 @@
 </head>
 <body>
 
-<div id="network"></div>
-<script src="script.js"></script>
+    <script src="script.js"></script>
 
-<div class="container">
-    <div class="square">
+    <div class="main-container">
+        <div class="container-square">
+            <div class="square"></div>
+            <div class="text">
+                - Edges in MST
+            </div>
+        </div>
+
+        <div id="network"></div>
+
+        <div class="input-container">
+            <label class="input-label" for="from">From:</label>
+            <input class="input-field" type="number" id="from">
+
+            <label class="input-label" for="to">To:</label>
+            <input class="input-field" type="number" id="to">
+
+            <label class="input-label" for="weight">Weight:</label>
+            <input class="input-field" type="number" id="weight">
+
+            <button class="add-button" onclick="addNode()">Add Node</button>
+        </div>
+
 
     </div>
-    <div class="text">
-        - Edges in MST
-    </div>
-</div>
-
 </body>
 </html>
