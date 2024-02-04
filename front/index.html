@@ -12,11 +12,19 @@
     <script src="script.js"></script>
 
     <div class="main-container">
-        <div class="container-square">
-            <div class="square"></div>
-            <div class="text">
-                - Edges in MST
-            </div>
+        <div class="container-algo">
+            <label class="element" for="algorithmSelect">Select an Algorithm:</label>
+            <select class="element" id="algorithmSelect">
+                <option value="mst">MST</option>
+                <option value="dijkstra">Dijkstra</option>
+                <option value="others">Others</option>
+
+            </select>
+
+            <button class="button-algorithms" onclick="getSelectedAlgorithm()">Get Selected Algorithm</button>
+
+            <div id="result"></div>
+
         </div>
 
         <div id="network"></div>

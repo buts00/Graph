@@ -11,18 +11,13 @@ import (
 	"net/http"
 )
 
-type DataToLoad struct {
-	Edges []graph.Edge
-	InMst []int
-}
-
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	_, err := fmt.Fprintf(w, "Homepage")
 	if err != nil {
 		return
 	}
 }
-func ReverseEdge(edge graph.Edge) graph.Edge {
+func reverseEdge(edge graph.Edge) graph.Edge {
 	temp := edge.Source
 	edge.Source = edge.Destination
 	edge.Destination = temp
@@ -35,7 +30,7 @@ func processEdge(db *database.PostgresDB, newEdge graph.Edge) error {
 		return fmt.Errorf("failed to check edge existence: %v", err)
 	}
 
-	reversedNewEdge := ReverseEdge(newEdge)
+	reversedNewEdge := reverseEdge(newEdge)
 	isReversedEdge, err := database.IsEdgeExist(db, reversedNewEdge)
 	if err != nil {
 		return fmt.Errorf("failed to check reversed edge existence: %v", err)
@@ -56,6 +51,20 @@ func processEdge(db *database.PostgresDB, newEdge graph.Edge) error {
 	}
 
 	return nil
+}
+
+func writeJSONResponse(writer http.ResponseWriter, data interface{}) {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		http.Error(writer, "Failed to write JSON response", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = writer.Write(jsonData)
+	if err != nil {
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 }
 
 func handlePostRequest(writer http.ResponseWriter, request *http.Request, db *database.PostgresDB) {
@@ -79,41 +88,46 @@ func handlePostRequest(writer http.ResponseWriter, request *http.Request, db *da
 	writer.WriteHeader(http.StatusOK)
 }
 
-func handleGetRequest(writer http.ResponseWriter, db *database.PostgresDB) {
+func handleGraphGetRequest(writer http.ResponseWriter, db *database.PostgresDB) {
 	curGraph, err := database.Edges(db)
 	if err != nil {
 		http.Error(writer, "Cannot connect to database", http.StatusInternalServerError)
 		return
 	}
+	writeJSONResponse(writer, curGraph.Edges)
+}
 
-	idInMst := Algorithms.NewMST().FindMST(curGraph)
-	data := DataToLoad{curGraph.Edges, idInMst}
-	jsonData, err := json.Marshal(data)
-
-	if err != nil {
-		http.Error(writer, "Failed to write JSON response", http.StatusInternalServerError)
-		return
-	}
-
-	_, err = writer.Write(jsonData)
-
-	if err != nil {
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
+func setResponseHeaders(writer http.ResponseWriter) {
+	writer.Header().Set("Access-Control-Allow-Origin", "*")
+	writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	writer.Header().Set("Content-Type", "application/json")
 }
 
 func GraphHandler(db *database.PostgresDB) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
-		writer.Header().Set("Access-Control-Allow-Origin", "*")
-		writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
-		writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-		writer.Header().Set("Content-Type", "application/json")
-
+		setResponseHeaders(writer)
 		if request.Method == http.MethodPost {
 			handlePostRequest(writer, request, db)
 		}
-		handleGetRequest(writer, db)
+
+		handleGraphGetRequest(writer, db)
+
+	}
+}
+
+func MSTHandler(db *database.PostgresDB) http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		setResponseHeaders(writer)
+
+		curGraph, err := database.Edges(db)
+		if err != nil {
+			http.Error(writer, "Cannot connect to database", http.StatusInternalServerError)
+			return
+		}
+
+		inMST := Algorithms.NewMST().FindMST(curGraph)
+		writeJSONResponse(writer, inMST)
 
 	}
 }
@@ -122,6 +136,7 @@ func Start(port string, db *database.PostgresDB) error {
 	router := mux.NewRouter()
 	router.HandleFunc("/", HomeHandler)
 	router.HandleFunc("/graph", GraphHandler(db))
+	router.HandleFunc("/graph/MST", MSTHandler(db))
 
 	if err := http.ListenAndServe(port, router); err != nil {
 		return err

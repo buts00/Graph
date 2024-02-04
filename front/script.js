@@ -1,32 +1,37 @@
-function getData() {
-    fetch('http://localhost:8080/graph')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            processData(data)
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
-}
-
-getData()
-
 let nodes = new vis.DataSet();
 let edges = new vis.DataSet();
 let network;
+const generalPath = "http://localhost:8080";
+const graphPath = generalPath + "/graph";
+const mstPath = graphPath + "/MST";
 
-function processData(data) {
-    console.log(data.Edges)
+
+function getGraph() {
+    fetch(graphPath)
+        .then(handleResponse)
+        .then(data => {
+            createGraph(data);
+        })
+        .catch(handleError);
+}
+
+getGraph()
+
+function getMst() {
+    fetch(mstPath)
+        .then(handleResponse)
+        .then(data => {
+            createMst(data);
+        })
+        .catch(handleError);
+}
+
+
+
+function createGraph(data) {
     edges.clear();
     nodes.clear();
-    data.Edges.forEach(edge => {
-        let color = '#6895D2'
-        if (data.InMst.includes(edge.Id)) color = '#FF9843'
+    data.forEach(edge => {
         if (!nodes.get(edge.Source)) {
             nodes.add({id: edge.Source, label: edge.Source.toString()});
         }
@@ -35,10 +40,11 @@ function processData(data) {
         }
 
         edges.add({
+            id: edge.Id,
             from: edge.Source,
             to: edge.Destination,
             label: edge.Weight.toString(),
-            color: color
+            color: '#6895D2'
 
         });
     });
@@ -65,12 +71,10 @@ function processData(data) {
 
         },
         physics: {
-
             barnesHut: {
                 centralGravity: 0.0,
                 gravitationalConstant: -1000
             },
-
         }
     };
 
@@ -142,7 +146,7 @@ function  getDataFromInputs() {
 }
 
 function sendDataToServer(edgeData) {
-    fetch('http://localhost:8080/graph', {
+    fetch(graphPath, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -151,7 +155,7 @@ function sendDataToServer(edgeData) {
     })
         .then(handleResponse)
         .then(data => {
-                getData();
+                getGraph();
         })
         .catch(handleError);
 }
@@ -173,6 +177,31 @@ function clearInputFields() {
     document.getElementById("weight").value = "";
 }
 
+function createMst(data) {
+    data.forEach(edgeIndex => {
+        let edge = edges.get(edgeIndex);
+        edge.color = '#FF9843';
+        edges.update(edge);
+    });
+}
+
+function clearMst() {
+    edges.forEach(edge => {
+        let curEdge = edges.get(edge.id);
+        curEdge.color = '#6895D2';
+        edges.update(curEdge);
+    })
+}
+
+
+function getSelectedAlgorithm() {
+    let selectElement = document.getElementById("algorithmSelect").value;
+    if (selectElement === "mst") {
+        getMst()
+    } else {
+        clearMst()
+    }
+}
 
 
 
