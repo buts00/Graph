@@ -1,4 +1,4 @@
-import {edges, nodes} from "./main";
+import {edges, nodes} from "./main.js";
 
 export function createGraph(data) {
     edges.clear();

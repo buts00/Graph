@@ -1,5 +1,5 @@
-import {clearInputFields, edges, getDataFromInputs, isValidInput} from "./main";
-import {sendEdgeDataToServer} from "./serverCommunication";
+import {clearInputFields, edges, getDataFromInputs, isValidInput} from "./main.js";
+import {sendEdgeDataToServer} from "./serverCommunication.js";
 
 export function isEdgeAlreadyExists(startNode, endNode, weight, edges) {
     const existingEdge = edges.get({

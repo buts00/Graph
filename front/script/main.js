@@ -1,6 +1,6 @@
-import {deleteEdge} from "./edgeOperations";
-import {getGraph, getMst, sendStartPointToServer} from "./serverCommunication";
-import {clearMst} from "./visualization";
+
+import {getGraph, getMst, sendStartPointToServer} from "./serverCommunication.js";
+import {clearMst} from "./visualization.js";
 
 
 export let nodes = new vis.DataSet();
