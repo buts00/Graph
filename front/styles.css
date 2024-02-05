@@ -77,6 +77,38 @@
 
 }
 
+#input-node-container {
+    display: none;
+    margin: 10px 0;
+    flex-direction: column;
+
+}
+
+.confirm-dijkstra {
+    display: inline-block;
+    outline: 0;
+    border: 0;
+
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 14px 24px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 0.9;
+    transition: transform 200ms,background 200ms;
+    background: transparent;
+    color: #000000;
+    box-shadow: 0 0 0 3px #000000 inset;
+
+}
+.confirm-dijkstra:hover {
+    transform: translateY(-2px);
+}
+
+.vertex-input {
+    margin-bottom: 10px;
+}
+
 .input-label {
     margin-bottom: 5px;
 }
