@@ -58,8 +58,49 @@ export function createGraph(data) {
 
 }
 
-export function createDistanceGraph(Distance) {
-    console.log(Distance)
+export function createDistanceGraph(distance) {
+
+    let newNodes = new vis.DataSet();
+    let newEdges = new vis.DataSet();
+
+    for (let i = 0; i < distance.length - 1; i++) {
+        let sourceNode = distance[i].Node;
+        let targetNode = distance[i + 1].Node;
+
+        if (!newNodes.get(-sourceNode)) {
+            newNodes.add({id: -sourceNode, label: sourceNode.toString()});
+        }
+        if (!newNodes.get(-targetNode)) {
+            newNodes.add({id: -targetNode, label: targetNode.toString()});
+        }
+
+
+        newEdges.add({
+            from: -sourceNode,
+            to: -targetNode,
+            label: distance[i + 1].Weight.toString(),
+            arrows: 'to'
+        });
+    }
+
+
+
+    let newOptions = {
+        nodes: {
+            shadow: { enabled: true },
+            font: { size: 25 },
+            shape: 'circle',
+
+        },
+        edges: { width: 3, shadow: { enabled: true }, smooth: false},
+
+    };
+
+    let container = document.getElementById('additional-network');
+    let graph = {nodes: newNodes, edges: newEdges};
+    let network = new vis.Network(container, graph, newOptions);
+
+
 }
 
 export function createMst(data) {

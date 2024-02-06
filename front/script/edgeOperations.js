@@ -1,7 +1,8 @@
-import {clearInputFields, edges, getDataFromInputs, isValidInput} from "./main.js";
+import {clearInputFields, getDataFromInputs, isValidInput} from "./graphFunctions.js";
 import {sendEdgeDataToServer} from "./serverCommunication.js";
+import {edges} from "./main.js"
 
-export function isEdgeAlreadyExists(startNode, endNode, weight, edges) {
+export function isEdgeAlreadyExists(startNode, endNode, weight) {
     const existingEdge = edges.get({
         filter: item => {
             return (
@@ -38,7 +39,7 @@ export function deleteEdge() {
         return;
     }
     clearInputFields()
-    if (!isEdgeAlreadyExists(Source,Destination,Weight,edges) && !isEdgeAlreadyExists(Destination, Source, Weight,edges)) {
+    if (!isEdgeAlreadyExists(Source,Destination,Weight) && !isEdgeAlreadyExists(Destination, Source, Weight)) {
         alert("There is not such edge");
         return;
     }
