@@ -41,7 +41,7 @@ func LoadConfig(filePath string) (*Config, error) {
 		return nil, err
 	}
 
-	if err := file.Unmarshal(config); err != nil {
+	if err = file.Unmarshal(config); err != nil {
 		return nil, err
 	}
 

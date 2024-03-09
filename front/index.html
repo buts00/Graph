@@ -11,18 +11,20 @@
 
     <script type="module" src="script/main.js"></script>
 
-     <div id="additional-network"></div>
+
+    <div id="additional-network"></div>
+
 
     <div class="main-container">
         <div class="container-algo">
-            <label class="element" for="algorithmSelect">Select an Algorithm:</label>
-            <select class="element" id="algorithmSelect">
+            <label class="input-algorithm" for="algorithmSelect">Select an Algorithm:</label>
+            <select class="input-algorithm" id="algorithmSelect">
                 <option value="mst">MST</option>
                 <option value="dijkstra">Dijkstra</option>
                 <option value="others">Others</option>
             </select>
             <div id="input-node-container">
-                <label class="vertex-input" for="vertexInput">Enter initial Vertex:</label>
+                <label class="vertex-input" for="vertexInput">Endter initial Vertex:</label>
                 <input class="vertex-input" type="number" id="vertexInput" >
                 <button class="confirm-dijkstra">Get dijkstra</button>
             </div>

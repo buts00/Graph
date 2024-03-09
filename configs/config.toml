@@ -6,3 +6,4 @@ dbName   = "graph_db"
 
 [server]
 bind_addr = ":8080"
+

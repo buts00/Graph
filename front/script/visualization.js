@@ -67,17 +67,17 @@ export function createDistanceGraph(distance) {
         let sourceNode = distance[i].Node;
         let targetNode = distance[i + 1].Node;
 
-        if (!newNodes.get(-sourceNode)) {
-            newNodes.add({id: -sourceNode, label: sourceNode.toString()});
+        if (!newNodes.get(sourceNode)) {
+            newNodes.add({id:sourceNode, label: sourceNode.toString()});
         }
-        if (!newNodes.get(-targetNode)) {
-            newNodes.add({id: -targetNode, label: targetNode.toString()});
+        if (!newNodes.get(targetNode)) {
+            newNodes.add({id:targetNode, label: targetNode.toString()});
         }
 
 
         newEdges.add({
-            from: -sourceNode,
-            to: -targetNode,
+            from: sourceNode,
+            to: targetNode,
             label: distance[i + 1].Weight.toString(),
             arrows: 'to'
         });
@@ -99,7 +99,7 @@ export function createDistanceGraph(distance) {
     let container = document.getElementById('additional-network');
     let graph = {nodes: newNodes, edges: newEdges};
     let network = new vis.Network(container, graph, newOptions);
-
+    console.log(distance)
 
 }
 

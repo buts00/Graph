@@ -140,7 +140,6 @@ func MSTHandler(db *database.PostgresDB) http.HandlerFunc {
 func handleDijkstraGetRequest(writer http.ResponseWriter, db *database.PostgresDB, startPoint int) {
 	curGraph, err := database.Edges(db)
 	if err != nil {
-		fmt.Println(err)
 		http.Error(writer, "Cannot connect to database", http.StatusInternalServerError)
 		return
 	}
@@ -151,14 +150,12 @@ func handleDijkstraGetRequest(writer http.ResponseWriter, db *database.PostgresD
 func handleDijkstraPostRequest(writer http.ResponseWriter, request *http.Request) int {
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
-		fmt.Println(err)
 		http.Error(writer, "Failed to unmarshal JSON data", http.StatusBadRequest)
 		return 0
 	}
 
 	var startPoint int
 	if err = json.Unmarshal(body, &startPoint); err != nil {
-		fmt.Println(err)
 		http.Error(writer, err.Error(), http.StatusBadRequest)
 		return 0
 	}

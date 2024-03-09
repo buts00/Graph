@@ -1,34 +1,37 @@
+#additional-network {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+
+
+
+}
 
 .main-container {
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /*height: 100vh;*/
+
 
 }
 
-
-
-#additional-network {
-    width: 100%;
-    padding: 80px;
-    background-color: #f0f0f0;
-
-}
 
 
 .container-algo {
     width: 11%;
     display: flex;
+
     flex-direction: column;
     margin-bottom: 500px;
     margin-left: 100px;
     z-index: 1;
 
-
 }
 
-.element {
+.input-algorithm {
     margin-right: 10px;
     padding: 5px;
     font-size: 16px;
@@ -58,30 +61,25 @@
 
 #network {
     width: 100%;
-   height: 80%;
-    background-color: #005fb2;
+    height: 50%;
+    /*background-color: #005fb2;*/
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     margin-right: 10px;
+    z-index: 1;
+
 
 
 }
 
 
-.square {
-    width: 20px;
-    height: 20px;
-    background-color: #FF9843;
-}
 
-.text {
-    margin-left: 10px;
-}
+
+
 
 .input-container {
-
     width: 10%;
     display: flex;
     flex-direction: column;

@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/buts00/Graph/internal/app/apiserver"
 	"github.com/buts00/Graph/internal/config"
 	"github.com/buts00/Graph/internal/database"
@@ -29,6 +30,7 @@ func main() {
 
 	//connect to database
 	databaseCfg := cfg.Database
+
 	password := os.Getenv("PASSWORD_graph_db")
 	db, err := database.NewPostgresDB(databaseCfg.Host, databaseCfg.Port, databaseCfg.User,
 		password, databaseCfg.DbName)
@@ -44,6 +46,8 @@ func main() {
 	}()
 
 	// Start Server
+
+	fmt.Println("Server run on port", cfg.Server.BindAddr)
 	if err := apiserver.Start(cfg.Server.BindAddr, db); err != nil {
 		log.Fatal(err)
 	}
