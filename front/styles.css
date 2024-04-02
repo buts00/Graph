@@ -1,15 +1,23 @@
+#additional-network {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 30%;
+}
 
 .main-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 100vh;
-
 }
+
+
 
 .container-algo {
     width: 11%;
     display: flex;
+
     flex-direction: column;
     margin-bottom: 500px;
     margin-left: 100px;
@@ -17,14 +25,14 @@
 
 }
 
-.element {
+.input-algorithm {
     margin-right: 10px;
     padding: 5px;
     font-size: 16px;
     align-items: center;
 }
 
-.button-algorithms {
+.button-style {
     margin-top: 10px;
     padding: 8px 16px;
     font-size: 16px;
@@ -39,7 +47,7 @@
     font-weight: 400;
     text-align: center;
 }
-.button-algorithms:hover {
+.button-style:hover {
     background-color: #005fb2;
     border-color: #005fb2;
 }
@@ -47,34 +55,67 @@
 
 #network {
     width: 100%;
-    height: 100%;
+    height: 50%;
+    /*background-color: #005fb2;*/
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     margin-right: 10px;
+    z-index: 1;
+
+
 
 }
 
 
-.square {
-    width: 20px;
-    height: 20px;
-    background-color: #FF9843;
-}
 
-.text {
-    margin-left: 10px;
-}
+
+
 
 .input-container {
-
     width: 10%;
     display: flex;
     flex-direction: column;
     margin-right: 200px;
     z-index: 1;
 
+}
+
+#input-node-container {
+    display: none;
+    margin: 10px 0;
+    flex-direction: column;
+
+}
+
+.confirm-dijkstra {
+    display: inline-block;
+    outline: 0;
+    border: 0;
+
+    cursor: pointer;
+    border-radius: 8px;
+    padding: 14px 24px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 0.9;
+    transition: transform 200ms,background 200ms;
+    background: transparent;
+    color: #000000;
+    box-shadow: 0 0 0 3px #000000 inset;
+
+}
+
+
+
+
+.confirm-dijkstra:hover {
+    transform: translateY(-2px);
+}
+
+.vertex-input {
+    margin-bottom: 10px;
 }
 
 .input-label {
@@ -87,49 +128,3 @@
 
 }
 
-.send-button {
-    margin-top: 10px;
-    align-items: center;
-    appearance: none;
-    background-image: radial-gradient(100% 100% at 100% 0, #5adaff 0, #5468ff 100%);
-    border: 0;
-    border-radius: 6px;
-    box-shadow: rgba(45, 35, 66, .4) 0 2px 4px,rgba(45, 35, 66, .3) 0 7px 13px -3px,rgba(58, 65, 111, .5) 0 -3px 0 inset;
-    box-sizing: border-box;
-    color: #fff;
-    cursor: pointer;
-    display: inline-flex;
-    font-family: "JetBrains Mono",monospace;
-    height: 48px;
-    justify-content: center;
-    list-style: none;
-    overflow: hidden;
-    padding: 8px 16px;
-    position: relative;
-    text-align: left;
-    text-decoration: none;
-    transition: box-shadow .15s,transform .15s;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    white-space: nowrap;
-    will-change: box-shadow,transform;
-    font-size: 18px;
-}
-
-
-
-
-.send-button:focus {
-    box-shadow: #3c4fe0 0 0 0 1.5px inset, rgba(45, 35, 66, .4) 0 2px 4px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
-}
-
-.send-button:hover {
-    box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #3c4fe0 0 -3px 0 inset;
-    transform: translateY(-2px);
-}
-
-.send-button:active {
-    box-shadow: #3c4fe0 0 3px 7px inset;
-    transform: translateY(2px);
-}

@@ -5,11 +5,16 @@ import (
 	"fmt"
 	"github.com/buts00/Graph/internal/app/graph"
 	"github.com/buts00/Graph/internal/app/graph/Algorithms"
+	"github.com/buts00/Graph/internal/app/graph/Algorithms/dijkstra"
 	"github.com/buts00/Graph/internal/database"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
 )
+
+type node struct {
+	StartPoint int
+}
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	_, err := fmt.Fprintf(w, "Homepage")
@@ -67,7 +72,7 @@ func writeJSONResponse(writer http.ResponseWriter, data interface{}) {
 	}
 }
 
-func handlePostRequest(writer http.ResponseWriter, request *http.Request, db *database.PostgresDB) {
+func handleGraphPostRequest(writer http.ResponseWriter, request *http.Request, db *database.PostgresDB) {
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
 		http.Error(writer, "Failed to read request body", http.StatusBadRequest)
@@ -108,7 +113,7 @@ func GraphHandler(db *database.PostgresDB) http.HandlerFunc {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		setResponseHeaders(writer)
 		if request.Method == http.MethodPost {
-			handlePostRequest(writer, request, db)
+			handleGraphPostRequest(writer, request, db)
 		}
 
 		handleGraphGetRequest(writer, db)
@@ -132,11 +137,49 @@ func MSTHandler(db *database.PostgresDB) http.HandlerFunc {
 	}
 }
 
+func handleDijkstraGetRequest(writer http.ResponseWriter, db *database.PostgresDB, startPoint int) {
+	curGraph, err := database.Edges(db)
+	if err != nil {
+		http.Error(writer, "Cannot connect to database", http.StatusInternalServerError)
+		return
+	}
+	distance := dijkstra.NewDijkstra().FindDijkstra(startPoint, curGraph)
+	writeJSONResponse(writer, distance)
+}
+
+func handleDijkstraPostRequest(writer http.ResponseWriter, request *http.Request) int {
+	body, err := io.ReadAll(request.Body)
+	if err != nil {
+		http.Error(writer, "Failed to unmarshal JSON data", http.StatusBadRequest)
+		return 0
+	}
+
+	var startPoint int
+	if err = json.Unmarshal(body, &startPoint); err != nil {
+		http.Error(writer, err.Error(), http.StatusBadRequest)
+		return 0
+	}
+	writer.WriteHeader(http.StatusOK)
+	return startPoint
+}
+
+func DijkstraHandler(db *database.PostgresDB) http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		setResponseHeaders(writer)
+		if request.Method == http.MethodPost {
+			startPoint := handleDijkstraPostRequest(writer, request)
+			handleDijkstraGetRequest(writer, db, startPoint)
+		}
+
+	}
+}
+
 func Start(port string, db *database.PostgresDB) error {
 	router := mux.NewRouter()
 	router.HandleFunc("/", HomeHandler)
 	router.HandleFunc("/graph", GraphHandler(db))
 	router.HandleFunc("/graph/MST", MSTHandler(db))
+	router.HandleFunc("/graph/dijkstra", DijkstraHandler(db))
 
 	if err := http.ListenAndServe(port, router); err != nil {
 		return err

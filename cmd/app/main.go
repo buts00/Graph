@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"github.com/buts00/Graph/internal/app/apiserver"
 
+	"github.com/buts00/Graph/internal/app/apiserver"
 	config2 "github.com/buts00/Graph/internal/config"
 	"github.com/buts00/Graph/internal/database"
 	_ "github.com/lib/pq"
@@ -42,10 +42,10 @@ func main() {
 	if err != nil {
 		logrus.Fatal("cannot connect to database: ", err)
 	}
+
 	defer func() {
 		if err = db.DB.Close(); err != nil {
 			logrus.Fatal("problem with closing db: ", err)
-
 		}
 	}()
 
@@ -54,6 +54,6 @@ func main() {
 	logrus.Info("Server run on port ", config.Server.BindAddr)
 	if err := apiserver.Start(config.Server.BindAddr, db); err != nil {
 		logrus.Fatal("error occurred while running http server: ", err)
-	}
 
+	}
 }

@@ -10,3 +10,7 @@ type Edge struct {
 type Graph struct {
 	Edges []Edge
 }
+
+func (g *Graph) AllValues(e Edge) (int, int, int, int) {
+	return e.Id, e.Source, e.Destination, e.Weight
+}

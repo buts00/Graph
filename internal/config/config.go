@@ -42,4 +42,5 @@ func LoadConfig(configPath string) (*Config, error) {
 			viper.GetString("bind_addr"),
 		},
 	}, nil
+
 }
