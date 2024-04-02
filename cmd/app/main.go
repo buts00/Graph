@@ -3,10 +3,12 @@ package main
 import (
 	"flag"
 	"github.com/buts00/Graph/internal/app/apiserver"
-	"github.com/buts00/Graph/internal/config"
+
+	config2 "github.com/buts00/Graph/internal/config"
 	"github.com/buts00/Graph/internal/database"
 	_ "github.com/lib/pq"
-	"log"
+	"github.com/sirupsen/logrus"
+	"github.com/subosito/gotenv"
 	"os"
 )
 
@@ -15,37 +17,43 @@ var (
 )
 
 func init() {
-	flag.StringVar(&configPath, "config-path", "configs/config.toml", "path to config")
+	flag.StringVar(&configPath, "config-path", "configs", "path to config")
 }
 
 func main() {
+	// Initialize logrus
+	logrus.SetFormatter(&logrus.JSONFormatter{})
+	logrus.SetOutput(os.Stdout)
 
-	//set Config
+	// Set Config
+	if err := gotenv.Load(); err != nil {
+		logrus.Fatal("cannot load env variables: ", err)
+	}
 	flag.Parse()
-	cfg, err := config.LoadConfig(configPath)
+	config, err := config2.LoadConfig(configPath)
 	if err != nil {
-		log.Fatal(err, "Error loading config: ")
+		logrus.Fatal("cannot set up config: ", err)
+
 	}
 
-	//connect to database
-	databaseCfg := cfg.Database
-	password := os.Getenv("PASSWORD_graph_db")
-	db, err := database.NewPostgresDB(databaseCfg.Host, databaseCfg.Port, databaseCfg.User,
-		password, databaseCfg.DbName)
-
+	// Connect to db
+	db, err := database.NewPostgresDB(config.Database.Host, config.Database.Port, config.Database.User,
+		config.Database.Password, config.Database.DbName)
 	if err != nil {
-		log.Fatal(err, "cannot connect to database")
+		logrus.Fatal("cannot connect to database: ", err)
 	}
-
 	defer func() {
 		if err = db.DB.Close(); err != nil {
-			log.Fatal(err, "problem with connection")
+			logrus.Fatal("problem with closing db: ", err)
+
 		}
 	}()
 
 	// Start Server
-	if err := apiserver.Start(cfg.Server.BindAddr, db); err != nil {
-		log.Fatal(err)
+
+	logrus.Info("Server run on port ", config.Server.BindAddr)
+	if err := apiserver.Start(config.Server.BindAddr, db); err != nil {
+		logrus.Fatal("error occurred while running http server: ", err)
 	}
 
 }

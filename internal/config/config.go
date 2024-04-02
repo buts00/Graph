@@ -1,49 +1,45 @@
 package config
 
 import (
-	"github.com/pelletier/go-toml"
+	"github.com/spf13/viper"
+	"os"
 )
 
 type DatabaseConfig struct {
-	Host   string `toml:"host"`
-	Port   string `toml:"port"`
-	User   string `toml:"user"`
-	DbName string `toml:"dbName"`
+	Host     string
+	Port     string
+	User     string
+	Password string
+	DbName   string
 }
 
 type ServerConfig struct {
-	BindAddr string `toml:"bind_addr"`
+	BindAddr string
 }
 
 type Config struct {
-	Database DatabaseConfig `toml:"database"`
-	Server   ServerConfig   `toml:"server"`
+	Database DatabaseConfig
+	Server   ServerConfig
 }
 
-func NewConfig() *Config {
+func LoadConfig(configPath string) (*Config, error) {
+	viper.AddConfigPath(configPath)
+	viper.SetConfigName("config")
+
+	if err := viper.ReadInConfig(); err != nil {
+		return nil, err
+	}
+
 	return &Config{
-		DatabaseConfig{
-			"localhost",
-			"5432",
-			"postgres",
-			"graph_db",
+		Database: DatabaseConfig{
+			viper.GetString("db.host"),
+			viper.GetString("db.port"),
+			viper.GetString("db.user"),
+			os.Getenv("DB_PASSWORD"),
+			viper.GetString("db.db_name"),
 		},
-		ServerConfig{
-			":8080",
+		Server: ServerConfig{
+			viper.GetString("bind_addr"),
 		},
-	}
-}
-
-func LoadConfig(filePath string) (*Config, error) {
-	config := NewConfig()
-	file, err := toml.LoadFile(filePath)
-	if err != nil {
-		return nil, err
-	}
-
-	if err := file.Unmarshal(config); err != nil {
-		return nil, err
-	}
-
-	return config, nil
+	}, nil
 }
