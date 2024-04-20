@@ -3,7 +3,7 @@ import {dijkstraPath, graphPath, mstPath} from "./main.js";
 
 export function getGraph() {
     fetch(graphPath, {
-
+        method: "GET"
     })
         .then(handleResponse)
         .then(data => {
@@ -26,16 +26,17 @@ export function sendEdgeDataToServer(edgeData) {
     fetch(graphPath, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/json',
         },
         body: JSON.stringify(edgeData),
     })
         .then(handleResponse)
         .then(data => {
-
             getGraph();
         })
-        .catch(handleError);
+        .catch(err => {
+            handleError(err)
+        });
 }
 
 export function sendStartPointToServer(startPoint) {

@@ -26,6 +26,7 @@ func (m *MST) UnionNodes(firstNode, secondNode int) {
 	if parentOfFirstNode == parentOfSecondNode {
 		return
 	}
+
 	m.parent[parentOfSecondNode] = parentOfFirstNode
 }
 

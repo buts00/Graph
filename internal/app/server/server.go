@@ -1,21 +1,38 @@
-package apiserver
+package server
 
 import (
-	"github.com/buts00/Graph/internal/app/handlers"
-	"github.com/buts00/Graph/internal/database"
-	"github.com/gorilla/mux"
 	"net/http"
+	"time"
 )
 
-func Start(port string, db *database.PostgresDB) error {
-	router := mux.NewRouter()
-	router.HandleFunc("/", handlers.HomeHandler)
-	router.HandleFunc("/graph", handlers.GraphHandler(db))
-	router.HandleFunc("/graph/MST", handlers.MSTHandler(db))
-	router.HandleFunc("/graph/dijkstra", handlers.DijkstraHandler(db))
-
-	if err := http.ListenAndServe(port, router); err != nil {
-		return err
-	}
-	return nil
+type Server struct {
+	httpServer *http.Server
 }
+
+func Run(port string, handler http.Handler) error {
+
+	server := Server{
+		httpServer: &http.Server{
+			Addr:           port,
+			MaxHeaderBytes: 1 << 20,
+			Handler:        handler,
+			ReadTimeout:    10 * time.Second,
+			WriteTimeout:   10 * time.Second,
+		},
+	}
+
+	return server.httpServer.ListenAndServe()
+}
+
+//func Start(port string, db *database.PostgresDB) error {
+//	router := mux.NewRouter()
+//	router.HandleFunc("/", handler.HomeHandler)
+//	router.HandleFunc("/graph", handler.GraphHandler(db))
+//	router.HandleFunc("/graph/MST", handler.MSTHandler(db))
+//	router.HandleFunc("/graph/dijkstra", handler.DijkstraHandler(db))
+//
+//	if err := http.ListenAndServe(port, router); err != nil {
+//		return err
+//	}
+//	return nil
+//}

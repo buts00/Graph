@@ -34,6 +34,7 @@ func (d *Dijkstra) FindMaxElement(graph graph.Graph) int {
 			maxElement = edge.Destination
 		}
 	}
+
 	return maxElement
 }
 

@@ -2,9 +2,9 @@ package graph
 
 type Edge struct {
 	Id          int
-	Source      int `json:"Source"`
-	Destination int `json:"Destination"`
-	Weight      int `json:"Weight"`
+	Source      int `json:"Source" binding:"required"`
+	Destination int `json:"Destination" binding:"required"`
+	Weight      int `json:"Weight" binding:"required"`
 }
 
 type Graph struct {
