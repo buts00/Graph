@@ -30,7 +30,7 @@ export function processDataFromDijkstra() {
     let vertexValue = document.getElementById("vertexInput").value;
     let node = nodes.get(parseInt(vertexValue));
     if (!isValidInput(vertexValue) || node == null) {
-        alert("Enter valid vertex");
+        // alert("Enter valid vertex");
         return
     }
     document.getElementById("vertexInput").value = "";
