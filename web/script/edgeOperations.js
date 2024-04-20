@@ -1,5 +1,5 @@
 import { clearInputFields, getDataFromInputs, isValidInput } from "./graphFunctions.js";
-import { sendEdgeDataToServer } from "./serverCommunication.js";
+import { sendEdgeDataToServer, removeEdgeFromServer } from "./serverCommunication.js";
 import { edges } from "./main.js"
 
 export function isEdgeAlreadyExists(startNode, endNode, weight) {
@@ -80,18 +80,23 @@ export function deleteEdge() {
             if (elements.length === 3) {
                 const [Source, Destination, Weight] = elements;
                 if (!isValidInput(Source) || !isValidInput(Destination) || !isValidInput(Weight)) {
+                    console.log('here')
                     throw new Erorr("Please enter valid numeric values.");
                 }
                 if (!isEdgeAlreadyExists(Source, Destination, Weight) && !isEdgeAlreadyExists(Destination, Source, Weight)) {
+                    console.log('here')
                     throw new Erorr("Edge does not exist");
                 }
                 edges.push({ Source, Destination, Weight })
             } else {
+                console.log('here')
                 throw new Error('Invalid input. Must be 3 ints')
             }
-            removeEdgeFromServer(edgeData)
+            console.log(edges)
+            removeEdgeFromServer(edges)
         })
     } catch (err) {
+        console.log('error', err)
         textarea.value = ''
         textarea.style.borderColor = 'red'
         return

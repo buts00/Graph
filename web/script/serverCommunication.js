@@ -39,6 +39,7 @@ export function sendEdgeDataToServer(edgeData) {
 }
 
 export function removeEdgeFromServer(edgeData) {
+    console.log("here5")
     fetch(graphPath, {
         method: 'DELETE',
         headers: {
