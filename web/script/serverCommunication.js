@@ -2,7 +2,9 @@ import {createDistanceGraph, createGraph, createMst} from "./visualization.js";
 import {dijkstraPath, graphPath, mstPath} from "./main.js";
 
 export function getGraph() {
-    fetch(graphPath)
+    fetch(graphPath, {
+
+    })
         .then(handleResponse)
         .then(data => {
             createGraph(data);
@@ -10,16 +12,17 @@ export function getGraph() {
         .catch(handleError);
 }
 
-export function getMst() {
-    fetch(mstPath)
-        .then(handleResponse)
-        .then(data => {
-            createMst(data);
-        })
-        .catch(handleError);
-}
+// export function getMst() {
+//     fetch(mstPath)
+//         .then(handleResponse)
+//         .then(data => {
+//             createMst(data);
+//         })
+//         .catch(handleError);
+// }
 
 export function sendEdgeDataToServer(edgeData) {
+    console.log(JSON.stringify(edgeData))
     fetch(graphPath, {
         method: 'POST',
         headers: {
@@ -29,6 +32,7 @@ export function sendEdgeDataToServer(edgeData) {
     })
         .then(handleResponse)
         .then(data => {
+
             getGraph();
         })
         .catch(handleError);

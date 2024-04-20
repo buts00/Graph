@@ -1,4 +1,4 @@
-import {getMst, sendStartPointToServer} from "./serverCommunication.js";
+// import {getMst, sendStartPointToServer} from "./serverCommunication.js";
 import {clearMst} from "./visualization.js";
 import {dijkstraPath, mstPath, nodes} from "./main.js";
 

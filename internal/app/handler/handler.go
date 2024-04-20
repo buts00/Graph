@@ -1,4 +1,4 @@
-package apiserver
+package handler
 
 import (
 	"encoding/json"
@@ -7,14 +7,10 @@ import (
 	"github.com/buts00/Graph/internal/app/graph/Algorithms"
 	"github.com/buts00/Graph/internal/app/graph/Algorithms/dijkstra"
 	"github.com/buts00/Graph/internal/database"
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
 )
-
-type node struct {
-	StartPoint int
-}
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
 	_, err := fmt.Fprintf(w, "Homepage")
@@ -174,15 +170,22 @@ func DijkstraHandler(db *database.PostgresDB) http.HandlerFunc {
 	}
 }
 
-func Start(port string, db *database.PostgresDB) error {
-	router := mux.NewRouter()
-	router.HandleFunc("/", HomeHandler)
-	router.HandleFunc("/graph", GraphHandler(db))
-	router.HandleFunc("/graph/MST", MSTHandler(db))
-	router.HandleFunc("/graph/dijkstra", DijkstraHandler(db))
+type Handler struct {
+	DB database.PostgresDB
+}
 
-	if err := http.ListenAndServe(port, router); err != nil {
-		return err
+func NewHandler(db database.PostgresDB) Handler {
+	return Handler{DB: db}
+}
+
+func (h *Handler) InitRoutes() *gin.Engine {
+	router := gin.New()
+
+	graphGroup := router.Group("/graph")
+	{
+		graphGroup.GET("/", h.allEdges)
+		graphGroup.POST("/", h.addEdge)
 	}
-	return nil
+
+	return router
 }

@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
+	handler2 "github.com/buts00/Graph/internal/app/handler"
+	"github.com/buts00/Graph/internal/app/server"
 
-	"github.com/buts00/Graph/internal/app/apiserver"
 	config2 "github.com/buts00/Graph/internal/config"
 	"github.com/buts00/Graph/internal/database"
 	_ "github.com/lib/pq"
@@ -52,8 +53,9 @@ func main() {
 	// Start Server
 
 	logrus.Info("Server run on port ", config.Server.BindAddr)
-	if err := apiserver.Start(config.Server.BindAddr, db); err != nil {
+	handler := handler2.NewHandler(*db)
+	if err := server.Run(config.Server.BindAddr, handler.InitRoutes()); err != nil {
 		logrus.Fatal("error occurred while running http server: ", err)
-
 	}
+
 }
