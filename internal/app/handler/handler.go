@@ -164,11 +164,11 @@ import (
 //}
 
 type Handler struct {
-	DB database.PostgresDB
+	DB *database.PostgresDB
 }
 
 func NewHandler(db database.PostgresDB) Handler {
-	return Handler{DB: db}
+	return Handler{DB: &db}
 }
 
 func setResponseHeadersMiddleware() gin.HandlerFunc {
@@ -194,6 +194,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		graphGroup.GET("/", h.allEdges)
 		graphGroup.POST("/", h.addEdge)
+		graphGroup.DELETE("/", h.deleteEdge)
 	}
 
 	return router

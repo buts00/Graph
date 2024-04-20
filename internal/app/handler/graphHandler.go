@@ -4,12 +4,11 @@ import (
 	"github.com/buts00/Graph/internal/app/graph"
 	"github.com/buts00/Graph/internal/database"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
 func (h *Handler) allEdges(ctx *gin.Context) {
-	curGraph, err := database.Edges(&h.DB)
+	curGraph, err := database.Edges(h.DB)
 	if err != nil {
 		NewErrorResponse(ctx, http.StatusInternalServerError, "cannot connect to db: "+err.Error())
 		return
@@ -19,19 +18,77 @@ func (h *Handler) allEdges(ctx *gin.Context) {
 
 }
 
-type Test struct {
-	s string
-}
-
 func (h *Handler) addEdge(ctx *gin.Context) {
-
-	var newEdge graph.Edge
-	if err := ctx.BindJSON(&newEdge); err != nil {
-		NewErrorResponse(ctx, http.StatusBadRequest, err.Error())
+	var myGraph graph.Graph
+	var edges = myGraph.Edges
+	ids := make([]int, 0)
+	if err := ctx.BindJSON(&edges); err != nil {
+		NewErrorResponse(ctx, http.StatusBadRequest, "failed to parse new Edge: "+err.Error())
 		return
 	}
-	logrus.Info(newEdge, "1221")
-	ctx.JSON(http.StatusOK, Test{s: "1"})
-	ctx.Status(http.StatusOK)
 
+	for _, edge := range edges {
+
+		if isEdgeExist, err := database.IsEdgeExist(h.DB, edge); err != nil || isEdgeExist {
+			if isEdgeExist {
+				NewErrorResponse(ctx, http.StatusBadRequest, "the edge is already exists")
+			}
+
+			if err != nil {
+				NewErrorResponse(ctx, http.StatusInternalServerError, "failed to check if edge is exists: "+err.Error())
+			}
+
+			return
+
+		}
+	}
+
+	for _, edge := range edges {
+		id, err := database.AddEdge(h.DB, edge)
+		ids = append(ids, id)
+		if err != nil {
+			NewErrorResponse(ctx, http.StatusInternalServerError, "failed to add edge: "+err.Error())
+			return
+		}
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"ids": ids})
+
+}
+
+func (h *Handler) deleteEdge(ctx *gin.Context) {
+	var myGraph graph.Graph
+	var edges = myGraph.Edges
+	ids := make([]int, 0)
+	if err := ctx.BindJSON(&edges); err != nil {
+		NewErrorResponse(ctx, http.StatusBadRequest, "failed to parse new Edge: "+err.Error())
+		return
+	}
+
+	for _, edge := range edges {
+
+		if isEdgeExist, err := database.IsEdgeExist(h.DB, edge); err != nil || !isEdgeExist {
+			if isEdgeExist {
+				NewErrorResponse(ctx, http.StatusBadRequest, "the edge isn't exists")
+			}
+
+			if err != nil {
+				NewErrorResponse(ctx, http.StatusInternalServerError, "failed to check if edge is exists: "+err.Error())
+			}
+
+			return
+
+		}
+	}
+
+	for _, edge := range edges {
+		id, err := database.DeleteEdge(h.DB, edge)
+		ids = append(ids, id)
+		if err != nil {
+			NewErrorResponse(ctx, http.StatusInternalServerError, "failed to delete edge: "+err.Error())
+			return
+		}
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"ids": ids})
 }

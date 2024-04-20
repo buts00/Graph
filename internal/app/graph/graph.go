@@ -8,7 +8,7 @@ type Edge struct {
 }
 
 type Graph struct {
-	Edges []Edge
+	Edges []Edge `json:"edges" binding:"required"`
 }
 
 func (g *Graph) AllValues(e Edge) (int, int, int, int) {

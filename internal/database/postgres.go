@@ -40,27 +40,48 @@ func Edges(db *PostgresDB) (graph.Graph, error) {
 	return cur, nil
 }
 
-func AddEdge(db *PostgresDB, edge graph.Edge) error {
-	if _, err := db.DB.Exec("INSERT INTO edges (source_node_id, destination_node_id, weight) VALUES ($1, $2, $3)",
-		edge.Source, edge.Destination, edge.Weight); err != nil {
-		return err
+func AddEdge(db *PostgresDB, edge graph.Edge) (int, error) {
+	query := fmt.Sprintf("INSERT INTO edges (source_node_id, destination_node_id, weight) VALUES ($1, $2, $3) RETURNING edge_id;")
+
+	var id int
+	err := db.DB.QueryRow(query, edge.Source, edge.Destination, edge.Weight).Scan(&id)
+	if err != nil {
+		return 0, err
 	}
-	return nil
+
+	return id, nil
 }
 
-func DeleteEdge(db *PostgresDB, edge graph.Edge) error {
-	if _, err := db.DB.Exec("DELETE FROM edges WHERE source_node_id = $1 AND destination_node_id = $2  AND weight = $3;",
-		edge.Source, edge.Destination, edge.Weight); err != nil {
-		return err
+func DeleteEdge(db *PostgresDB, edge graph.Edge) (int, error) {
+	query := fmt.Sprintf("DELETE FROM edges WHERE source_node_id = $1 AND destination_node_id = $2  AND weight = $3 RETURNING  edge_id;")
+
+	var id int
+	err := db.DB.QueryRow(query, edge.Source, edge.Destination, edge.Weight).Scan(&id)
+	if err != nil {
+		return 0, err
 	}
-	return nil
+
+
+	return id, nil
+
 }
 
 func IsEdgeExist(db *PostgresDB, edge graph.Edge) (bool, error) {
-	var count int
-	if err := db.DB.QueryRow("SELECT COUNT(*) FROM edges WHERE source_node_id = $1 AND destination_node_id = $2 AND weight = $3;",
-		edge.Source, edge.Destination, edge.Weight).Scan(&count); err != nil {
+	var (
+		count, reversedCount int
+	)
+	query := fmt.Sprintf("SELECT COUNT(*) FROM edges WHERE source_node_id = $1 AND destination_node_id = $2 AND weight = $3;")
+
+	err := db.DB.QueryRow(query, edge.Source, edge.Destination, edge.Weight).Scan(&count)
+	if err != nil {
 		return false, err
 	}
-	return count > 0, nil
+
+	err = db.DB.QueryRow(query, edge.Destination, edge.Source, edge.Weight).Scan(&reversedCount)
+
+	if err != nil {
+		return false, err
+	}
+
+	return count + reversedCount > 0, nil
 }
