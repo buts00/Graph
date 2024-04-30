@@ -1,4 +1,4 @@
-package dijkstra
+package Dijkstra
 
 import (
 	"container/heap"

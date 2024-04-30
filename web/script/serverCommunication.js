@@ -1,5 +1,5 @@
-import {createDistanceGraph, createGraph, createMst} from "./visualization.js";
-import {dijkstraPath, graphPath, mstPath} from "./main.js";
+import { createDistanceGraph, createGraph, createMst } from "./visualization.js";
+import { dijkstraPath, graphPath, mstPath } from "./main.js";
 
 export function getGraph() {
     fetch(graphPath, {
@@ -22,13 +22,30 @@ export function getGraph() {
 // }
 
 export function sendEdgeDataToServer(edgeData) {
-    console.log(JSON.stringify(edgeData))
     fetch(graphPath, {
         method: 'POST',
         headers: {
-            // 'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify(edgeData),
+        body: JSON.stringify({ edges: edgeData }),
+    })
+        .then(handleResponse)
+        .then(data => {
+            getGraph();
+        })
+        .catch(err => {
+            handleError(err)
+        });
+}
+
+export function removeEdgeFromServer(edgeData) {
+    console.log("here5")
+    fetch(graphPath, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ edges: edgeData }),
     })
         .then(handleResponse)
         .then(data => {
@@ -63,6 +80,6 @@ export function handleResponse(response) {
 }
 
 export function handleError(error) {
-    alert("There was with the fetch operation")
+    // alert("There was with the fetch operation")
     console.error('There was a problem with the fetch operation:', error);
 }
