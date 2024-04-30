@@ -50,7 +50,9 @@ Ensure that PostgreSQL is installed and running locally. Set up the database con
 The server configuration is stored in a YAML file. Modify the configuration in `config.yaml` as needed.
 
 #### Screenshots:
-*Add screenshots of your program here.*
+The example of graph and algorithm MST (the edges that are in MST are painted in orange)
+
+<img src="images/img.png">
 
 #### Dependencies:
 - Go
