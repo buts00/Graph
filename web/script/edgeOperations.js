@@ -81,11 +81,11 @@ export function deleteEdge() {
                 const [Source, Destination, Weight] = elements;
                 if (!isValidInput(Source) || !isValidInput(Destination) || !isValidInput(Weight)) {
                     console.log('here')
-                    throw new Erorr("Please enter valid numeric values.");
+                    throw new Error("Please enter valid numeric values.");
                 }
                 if (!isEdgeAlreadyExists(Source, Destination, Weight) && !isEdgeAlreadyExists(Destination, Source, Weight)) {
                     console.log('here')
-                    throw new Erorr("Edge does not exist");
+                    throw new Error("Edge does not exist");
                 }
                 edges.push({ Source, Destination, Weight })
             } else {

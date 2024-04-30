@@ -12,14 +12,14 @@ export function getGraph() {
         .catch(handleError);
 }
 
-// export function getMst() {
-//     fetch(mstPath)
-//         .then(handleResponse)
-//         .then(data => {
-//             createMst(data);
-//         })
-//         .catch(handleError);
-// }
+export function getMst() {
+    fetch(mstPath)
+        .then(handleResponse)
+        .then(data => {
+            createMst(data);
+        })
+        .catch(handleError);
+}
 
 export function sendEdgeDataToServer(edgeData) {
     fetch(graphPath, {
@@ -27,7 +27,7 @@ export function sendEdgeDataToServer(edgeData) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ edges: edgeData }),
+        body: JSON.stringify(edgeData),
     })
         .then(handleResponse)
         .then(data => {
@@ -45,7 +45,7 @@ export function removeEdgeFromServer(edgeData) {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ edges: edgeData }),
+        body: JSON.stringify(edgeData),
     })
         .then(handleResponse)
         .then(data => {

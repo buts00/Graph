@@ -38,8 +38,7 @@ func main() {
 	}
 
 	// Connect to db
-	db, err := database.NewPostgresDB(config.Database.Host, config.Database.Port, config.Database.User,
-		config.Database.Password, config.Database.DbName)
+	db, err := database.NewPostgresDB(*config)
 	if err != nil {
 		logrus.Fatal("cannot connect to database: ", err)
 	}

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/buts00/Graph/internal/app/graph"
+	"github.com/buts00/Graph/internal/config"
 	_ "github.com/lib/pq"
 )
 
@@ -11,9 +12,9 @@ type PostgresDB struct {
 	DB *sql.DB
 }
 
-func NewPostgresDB(host, port, user, password, dbName string) (*PostgresDB, error) {
+func NewPostgresDB(config config.Config) (*PostgresDB, error) {
 	connectionString := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbName)
+		config.Database.Host, config.Database.Port, config.Database.User, config.Database.Password, config.Database.DbName)
 
 	db, err := sql.Open("postgres", connectionString)
 	if err != nil {
@@ -61,7 +62,6 @@ func DeleteEdge(db *PostgresDB, edge graph.Edge) (int, error) {
 		return 0, err
 	}
 
-
 	return id, nil
 
 }
@@ -83,5 +83,5 @@ func IsEdgeExist(db *PostgresDB, edge graph.Edge) (bool, error) {
 		return false, err
 	}
 
-	return count + reversedCount > 0, nil
+	return count+reversedCount > 0, nil
 }

@@ -1,5 +1,5 @@
 import {addEdge, deleteEdge} from "./edgeOperations.js";
-import {getSelectedAlgorithm, processDataFromDijkstra} from "./graphFunctions.js";
+import {getSelectedAlgorithm} from "./graphFunctions.js";
 
 export function setButtons() {
     const addEdgeButton = document.querySelector('.add-edge');
@@ -8,6 +8,6 @@ export function setButtons() {
     removeEdgeButton.addEventListener('click', deleteEdge)
     const selectAlgorithmButton = document.querySelector('.algorithm-button');
     selectAlgorithmButton.addEventListener('click', getSelectedAlgorithm)
-    const confirmDijkstraButton = document.querySelector('.confirm-dijkstra');
-    confirmDijkstraButton.addEventListener('click', processDataFromDijkstra)
+    // const confirmDijkstraButton = document.querySelector('.confirm-dijkstra');
+    // confirmDijkstraButton.addEventListener('click', processDataFromDijkstra)
 }

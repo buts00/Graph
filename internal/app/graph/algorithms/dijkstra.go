@@ -1,4 +1,4 @@
-package Dijkstra
+package algorithms
 
 import (
 	"container/heap"
@@ -20,21 +20,12 @@ type Dijkstra struct {
 	Matrix   [][]Pair
 }
 
-func NewDijkstra() *Dijkstra {
-	return &Dijkstra{}
-}
 
 func (d *Dijkstra) FindMaxElement(graph graph.Graph) int {
-	maxElement := graph.Edges[0].Source
+	maxElement := 0
 	for _, edge := range graph.Edges {
-		if edge.Source > maxElement {
-			maxElement = edge.Source
-		}
-		if edge.Destination > maxElement {
-			maxElement = edge.Destination
-		}
+		maxElement = max(maxElement, edge.Source,edge.Destination)
 	}
-
 	return maxElement
 }
 

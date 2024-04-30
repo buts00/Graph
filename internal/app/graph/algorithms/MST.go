@@ -1,4 +1,4 @@
-package Algorithms
+package algorithms
 
 import (
 	"github.com/buts00/Graph/internal/app/graph"

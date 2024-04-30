@@ -1,6 +1,7 @@
-// import {getMst, sendStartPointToServer} from "./serverCommunication.js";
+import {getMst} from "./serverCommunication.js";
 import {clearMst} from "./visualization.js";
-import {dijkstraPath, mstPath, nodes} from "./main.js";
+import {mstPath} from "./main.js";
+
 
 export function isValidInput(value) {
     return /^[1-9]\d*$/.test(value);
@@ -26,16 +27,16 @@ export function clearInputFields() {
 }
 
 
-export function processDataFromDijkstra() {
-    let vertexValue = document.getElementById("vertexInput").value;
-    let node = nodes.get(parseInt(vertexValue));
-    if (!isValidInput(vertexValue) || node == null) {
-        // alert("Enter valid vertex");
-        return
-    }
-    document.getElementById("vertexInput").value = "";
-    sendStartPointToServer(parseInt(vertexValue),dijkstraPath)
-}
+// export function processDataFromDijkstra() {
+//     let vertexValue = document.getElementById("vertexInput").value;
+//     let node = nodes.get(parseInt(vertexValue));
+//     if (!isValidInput(vertexValue) || node == null) {
+//         // alert("Enter valid vertex");
+//         return
+//     }
+//     document.getElementById("vertexInput").value = "";
+//     sendStartPointToServer(parseInt(vertexValue),dijkstraPath)
+// }
 
 export function getSelectedAlgorithm() {
     let selectElement = document.getElementById("algorithmSelect").value;

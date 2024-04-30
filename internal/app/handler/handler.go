@@ -120,7 +120,7 @@ import (
 //			return
 //		}
 //
-//		inMST := Algorithms.NewMST().FindMST(curGraph)
+//		inMST := algorithms.NewMST().FindMST(curGraph)
 //		writeJSONResponse(writer, inMST)
 //
 //	}
@@ -176,7 +176,7 @@ func setResponseHeadersMiddleware() gin.HandlerFunc {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
 
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
@@ -195,6 +195,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		graphGroup.GET("/", h.allEdges)
 		graphGroup.POST("/", h.addEdge)
 		graphGroup.DELETE("/", h.deleteEdge)
+		graphGroup.GET("/MST", h.mst)
 	}
 
 	return router

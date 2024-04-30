@@ -1,4 +1,4 @@
-package Dijkstra
+package algorithms
 
 type intHeap []Pair
 
