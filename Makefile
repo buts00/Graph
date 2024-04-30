@@ -9,8 +9,8 @@ build:
 	go build cmd/main.go
 
 # Виконує go mod tidy для оновлення пакетів
-.PHONY: download_packages
-download_packages:
+.PHONY: update_packages
+update_packages:
 	go mod tidy
 
 # Створює нову міграцію
