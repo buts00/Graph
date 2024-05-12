@@ -1,5 +1,5 @@
-import { createDistanceGraph, createGraph, createMst } from "./visualization.js";
-import { dijkstraPath, graphPath, mstPath } from "./main.js";
+import {createDistanceGraph, createGraph, createMst} from "./visualization.js";
+import {dijkstraPath, graphPath, mstPath} from "./main.js";
 
 export function getGraph() {
     fetch(graphPath, {
@@ -12,14 +12,30 @@ export function getGraph() {
         .catch(handleError);
 }
 
-export function getMst() {
-    fetch(mstPath)
-        .then(handleResponse)
-        .then(data => {
-            createMst(data);
-        })
-        .catch(handleError);
+export async function getMst() {
+    try {
+        const response = await fetch(mstPath)
+        if (response.ok) {
+            const data = await response.json()
+            console.log(data)
+            createMst(data)
+        }
+    } catch (e) {
+        handleError(e)
+    }
 }
+
+export const getDijkstra = async (node) => {
+    try {
+        const response = await fetch(dijkstraPath + `?node=${node}`)
+        if (response.ok) {
+            const data = await response.json()
+            createDistanceGraph(data)
+        }
+    } catch (e) {
+        handleError(e)
+    }
+};
 
 export function sendEdgeDataToServer(edgeData) {
     fetch(graphPath, {

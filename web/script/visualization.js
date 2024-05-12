@@ -59,7 +59,6 @@ export function createGraph(data) {
 }
 
 export function createDistanceGraph(distance) {
-
     let newNodes = new vis.DataSet();
     let newEdges = new vis.DataSet();
 

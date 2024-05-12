@@ -1,4 +1,4 @@
-import {getMst} from "./serverCommunication.js";
+import {getDijkstra, getMst} from "./serverCommunication.js";
 import {clearMst} from "./visualization.js";
 import {mstPath} from "./main.js";
 
@@ -8,7 +8,7 @@ export function isValidInput(value) {
 }
 
 
-export function  getDataFromInputs() {
+export function getDataFromInputs() {
     let fromValue = document.getElementById("from").value;
     let toValue = document.getElementById("to").value;
     let weightValue = document.getElementById("weight").value;
@@ -38,17 +38,16 @@ export function clearInputFields() {
 //     sendStartPointToServer(parseInt(vertexValue),dijkstraPath)
 // }
 
-export function getSelectedAlgorithm() {
-    let selectElement = document.getElementById("algorithmSelect").value;
-    let inputContainer = document.getElementById("input-node-container");
-    if (selectElement === "mst") {
-        getMst(mstPath)
-        inputContainer.style.display = "none";
-    } else if (selectElement === "dijkstra") {
+export async function getSelectedAlgorithm() {
+    const selectElementValue = document.getElementById("algorithmSelect").value;
+    console.log(selectElementValue)
+    if (selectElementValue === "mst") {
+        await getMst(mstPath)
+    } else if (selectElementValue === "dijkstra") {
         clearMst()
-        inputContainer.style.display = "flex";
+        const node = document.getElementById("vertexInput").value;
+        await getDijkstra(node)
     } else {
         clearMst()
-        inputContainer.style.display = "none";
     }
 }

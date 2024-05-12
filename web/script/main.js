@@ -13,6 +13,30 @@ function main() {
     getGraph()
 }
 
+const imgPreviewNode = document.querySelector('.img-preview')
+const imgInput = document.querySelector('.img-input')
+const formNode = document.querySelector('.form')
+
+imgInput.addEventListener('change', () => {
+    const file = imgInput.files[0]
+    if (file) {
+        imgPreviewNode.style.display = 'block'
+        imgPreviewNode.src = URL.createObjectURL(file)
+    }
+})
+
+formNode.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const formData = new FormData(formNode)
+    await fetch(generalPath, { // change url to the server
+        method: 'POST',
+        body: formData
+    })
+    await getGraph()
+    imgPreviewNode.style.display = 'none'
+    imgInput.value = ''
+})
+
 main()
 
 

@@ -15,8 +15,6 @@
 
     <div id="network"></div>
 
-
-
     <div class="main-container">
         <div class="container-algo">
             <label class="input-algorithm" for="algorithmSelect">Select an Algorithm:</label>
@@ -34,16 +32,16 @@
             <div id="result"></div>
         </div>
         <div class="input-container">
-            <!-- <label class="input-label" for="from">From:</label>
-            <input class="input-field" type="number" id="from">
-            <label class="input-label" for="to">To:</label>
-            <input class="input-field" type="number" id="to">
-            <label class="input-label" for="weight">Weight:</label>
-            <input class="input-field" type="number" id="weight"> -->
             <textarea name="textarea" id="textarea" cols="30" rows="10"
                 placeholder="[from] [to] [weight] &#10;Only integers &#10;1 2 3 &#10;2 3 1"></textarea>
             <button class="button-style add-edge">Add Edge</button>
             <button class="button-style remove-edge">Remove Edge</button>
+            <form class="form">
+                <input class="img-input" accept="image/*" name="file" id="file" type="file" hidden>
+                <img class="img-preview" src="" alt="preview">
+                <label class="upload-label" for="file"><img class="upload-icon" src="img/upload.svg" alt="upload">Choose graph image</label>
+                <button type="submit" class="button-style">Upload</button>
+            </form>
         </div>
     </div>
 </body>

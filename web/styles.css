@@ -1,3 +1,9 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 #additional-network {
     position: fixed;
     top: 0;
@@ -11,6 +17,7 @@
     align-items: center;
     justify-content: space-around;
     height: 50vh;
+    margin-top: 10%;
 }
 
 .container-algo {
@@ -28,6 +35,7 @@
 }
 
 .button-style {
+    width: 100%;
     margin-top: 10px;
     padding: 8px 16px;
     font-size: 16px;
@@ -112,4 +120,34 @@ textarea {
     resize: none;
     border: 1px solid black;
     border-radius: 0.25rem;
+    min-width: 50px;
+}
+
+.form {
+    margin-top: 25px;
+}
+
+.upload-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    background: #c1cdfd;
+    padding: 10px;
+    border-radius: 0.25rem;
+}
+
+.upload-icon {
+    display: block;
+    width: 15px;
+    height: 15px;
+}
+
+.img-preview {
+    display: none;
+    width: 100%;
+    height: 150px;
+    margin-bottom: 15px;
 }
