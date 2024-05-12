@@ -20,11 +20,14 @@ type Dijkstra struct {
 	Matrix   [][]Pair
 }
 
+func NewDijkstra() *Dijkstra {
+	return &Dijkstra{}
+}
 
 func (d *Dijkstra) FindMaxElement(graph graph.Graph) int {
 	maxElement := 0
 	for _, edge := range graph.Edges {
-		maxElement = max(maxElement, edge.Source,edge.Destination)
+		maxElement = max(maxElement, edge.Source, edge.Destination)
 	}
 	return maxElement
 }
