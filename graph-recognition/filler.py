@@ -17,21 +17,20 @@ ROUND_RATIO: float = 3.0
 K3 = np.ones((3, 3), dtype=np.uint8)
 K5 = np.ones((5, 5), dtype=np.uint8)
 
-def fill_vertices(image: np.ndarray) -> Tuple[np.ndarray,np.ndarray]:
 
+def fill_vertices(image: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     image = fill_elliptical_contours(image)
     image = fill_circular_shapes(image)
-  
+
     image = cv.morphologyEx(image, cv.MORPH_CLOSE, K3, iterations=1)
     image = fill_small_contours(image)
 
     edgeless = remove_edges(image.copy())
-    
+
     return image, edgeless
 
 
 def fill_elliptical_contours(image: np.ndarray) -> np.ndarray:
-
     processed = cv.morphologyEx(image, cv.MORPH_CLOSE, K3, iterations=4)
     contours, hierarchy = cv.findContours(processed, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
     img_area = image.shape[0] * image.shape[1]
@@ -53,8 +52,8 @@ def fill_elliptical_contours(image: np.ndarray) -> np.ndarray:
 
     return image
 
+
 def fill_circular_shapes(image: np.ndarray) -> np.ndarray:
-    
     r_min, r_max, min_dist = get_hough_param(image)
 
     circles = cv.HoughCircles(
@@ -74,7 +73,6 @@ def fill_circular_shapes(image: np.ndarray) -> np.ndarray:
 
 
 def fill_small_contours(image: np.ndarray) -> np.ndarray:
-    
     contours, hierarchy = cv.findContours(image, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
     max_area = image.shape[0] * image.shape[1] * 0.001
     for i in range(0, len(contours)):
@@ -84,21 +82,19 @@ def fill_small_contours(image: np.ndarray) -> np.ndarray:
 
 
 def contours_overlap_level(contour1, contour2):
-    
     dist_limit = 1 if cv.contourArea(contour1) >= 150 else 0
     overlapping_pixels = 0
     for pt in contour1:
-        x, y = pt.ravel()  
-        dist = abs(cv.pointPolygonTest(contour2, (int(x), int(y)), True))  
-        if dist <= dist_limit: 
+        x, y = pt.ravel()
+        dist = abs(cv.pointPolygonTest(contour2, (int(x), int(y)), True))
+        if dist <= dist_limit:
             overlapping_pixels += 1
     overlay_level = overlapping_pixels / float(len(contour1))
 
     return overlay_level
 
 
-def get_hough_param(image: np.ndarray) -> Tuple[int, int, int,np.ndarray]:
-    
+def get_hough_param(image: np.ndarray) -> Tuple[int, int, int, np.ndarray]:
     edgeless = remove_edges(image.copy())
     contours, hierarchy = cv.findContours(edgeless, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
     radius_list = [cv.minEnclosingCircle(contour)[1] for contour, hier in zip(contours, hierarchy[0])
@@ -108,12 +104,11 @@ def get_hough_param(image: np.ndarray) -> Tuple[int, int, int,np.ndarray]:
         return floor(r_avg * 0.5), ceil(r_avg * 1.2), r_avg * 3
     else:
         width = image.shape[1]
-    
-    return floor(width * MIN_R_FACTOR), ceil(width * MAX_R_FACTOR), floor(width * DIST_FACTOR),edgeless
+
+    return floor(width * MIN_R_FACTOR), ceil(width * MAX_R_FACTOR), floor(width * DIST_FACTOR), edgeless
 
 
 def remove_edges(image: np.ndarray) -> np.ndarray:
-
     eroded_contours = image.copy()
     contours_list = []
 
