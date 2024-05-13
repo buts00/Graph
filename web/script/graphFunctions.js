@@ -45,7 +45,8 @@ export async function getSelectedAlgorithm() {
         await getMst(mstPath)
     } else if (selectElementValue === "dijkstra") {
         clearMst()
-        const node = document.getElementById("vertexInput").value;
+        const nodeFrom = document.querySelector(".vertexInputFrom").value;
+        const nodeTo = document.querySelector(".vertexInputTo").value;
         await getDijkstra(node)
     } else {
         clearMst()
