@@ -35,7 +35,7 @@ func (h *Handler) dijkstra(ctx *gin.Context) {
 		return
 	}
 
-	distance := algorithms.NewDijkstra().FindDijkstra(startPoint, curGraph)
+	distance := algorithms.NewDijkstra().FindDijkstra(startPoint, endPoint, curGraph)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"distance": distance,

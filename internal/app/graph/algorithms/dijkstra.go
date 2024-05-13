@@ -82,11 +82,11 @@ func (d *Dijkstra) dijkstra(startPoint, destination int) {
 
 }
 
-func (d *Dijkstra) FindDijkstra(startPoint int, g graph.Graph) []Pair {
+func (d *Dijkstra) FindDijkstra(startPoint, destination int, g graph.Graph) []Pair {
 	maxElement := d.FindMaxElement(g)
 	d.initDijkstra(maxElement, g)
 	d.addEdges(g)
-	d.dijkstra(startPoint)
+	d.dijkstra(startPoint, destination)
 	distance := make([]Pair, 0)
 	for i := range d.Distance {
 		if d.Distance[i] != inf {

@@ -42,19 +42,19 @@ func Edges(db *PostgresDB) (graph.Graph, error) {
 }
 
 func AddEdge(db *PostgresDB, edge graph.Edge) (int, error) {
-	query := fmt.Sprintf("INSERT INTO edges (source_node_id, destination_node_id, weight) VALUES ($1, $2, $3) RETURNING id;")
+	query := fmt.Sprintf("INSERT INTO edges (source_node_id, destination_node_id, weight) VALUES ($1, $2, $3) RETURNING edge_id;")
 
 	var id int
 	err := db.DB.QueryRow(query, edge.Source, edge.Destination, edge.Weight).Scan(&id)
 	if err != nil {
 		return 0, err
 	}
-
+	fmt.Printf("Added edge with id %d\n", id)
 	return id, nil
 }
 
 func DeleteEdge(db *PostgresDB, edge graph.Edge) (int, error) {
-	query := fmt.Sprintf("DELETE FROM edges WHERE source_node_id = $1 AND destination_node_id = $2  AND weight = $3 RETURNING  id;")
+	query := fmt.Sprintf("DELETE FROM edges WHERE source_node_id = $1 AND destination_node_id = $2  AND weight = $3 RETURNING  edge_id;")
 
 	var id int
 	err := db.DB.QueryRow(query, edge.Source, edge.Destination, edge.Weight).Scan(&id)
