@@ -18,6 +18,7 @@ type Dijkstra struct {
 	SIZE     int
 	Distance []int
 	Matrix   [][]Pair
+	Parent   []int
 }
 
 func NewDijkstra() *Dijkstra {
@@ -51,7 +52,7 @@ func (d *Dijkstra) addEdges(g graph.Graph) {
 	}
 }
 
-func (d *Dijkstra) dijkstra(startPoint int) {
+func (d *Dijkstra) dijkstra(startPoint, destination int) {
 	d.Distance[startPoint] = 0
 	h := &intHeap{{0, startPoint}}
 	heap.Init(h)
@@ -59,6 +60,9 @@ func (d *Dijkstra) dijkstra(startPoint int) {
 		var curPair Pair = (*h)[0]
 		curNode := curPair.Node
 		heap.Pop(h)
+		if curNode == destination {
+			break // Якщо досягли пункту призначення, виходимо з циклу
+		}
 		for _, pair := range d.Matrix[curNode] {
 			weight := pair.Weight
 			to := pair.Node
@@ -68,6 +72,13 @@ func (d *Dijkstra) dijkstra(startPoint int) {
 			}
 		}
 	}
+	path := []Pair{}
+	current := destination
+	for current != startPoint {
+		path = append([]Pair{{Weight: d.Distance[current], Node: current}}, path...)
+		current = d.Parent[current]
+	}
+	path = append([]Pair{{Weight: 0, Node: startPoint}}, path...)
 
 }
 
