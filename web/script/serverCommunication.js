@@ -25,13 +25,27 @@ export async function getMst() {
     }
 }
 
-export const getDijkstra = async (node) => {
+export const getDijkstra = async (nodeFrom, nodeTo) => {
     try {
-        const response = await fetch(dijkstraPath + `?node=${node}`)
-        if (response.ok) {
-            const data = await response.json()
-            createDistanceGraph(data)
-        }
+        // const response = await fetch(dijkstraPath + `?node=${node}`)
+        // if (response.ok) {
+        //     const data = await response.json()
+        //     createDistanceGraph(data)
+        // }
+
+        const distance = [
+            {
+                Source: 2,
+                Destination: 1,
+                Weight: 1,
+            },
+            {
+                Source: 1,
+                Destination: 10,
+                Weight: 1,
+            }
+        ]
+        createDistanceGraph(distance)
     } catch (e) {
         handleError(e)
     }
@@ -55,7 +69,8 @@ export function sendEdgeDataToServer(edgeData) {
 }
 
 export function removeEdgeFromServer(edgeData) {
-    console.log("here5")
+    console.log("in fn removeedgefromserver: ", edgeData)
+    console.log("remove from server", JSON.stringify(edgeData))
     fetch(graphPath, {
         method: 'DELETE',
         headers: {

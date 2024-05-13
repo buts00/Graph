@@ -79,8 +79,23 @@
 #input-node-container {
     display: none;
     margin: 10px 0;
-    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
 
+#input-node-container p{
+    margin: 0;
+}
+
+.vertex-input {
+    margin: 0;
+    border: none;
+    border-radius: 100%;
+    display: inline;
+    padding: 5px;
+    height: 50px;
+    width: 50px;
+    text-align: center;
 }
 
 .confirm-dijkstra {
@@ -103,10 +118,6 @@
     transform: translateY(-2px);
 }
 
-.vertex-input {
-    margin-bottom: 10px;
-}
-
 .input-label {
     margin-bottom: 5px;
 }
@@ -121,6 +132,7 @@ textarea {
     border: 1px solid black;
     border-radius: 0.25rem;
     min-width: 50px;
+    padding: 2px;
 }
 
 .form {

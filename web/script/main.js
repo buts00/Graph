@@ -37,6 +37,7 @@ formNode.addEventListener('submit', async (e) => {
     imgInput.value = ''
 })
 
+
 main()
 
 

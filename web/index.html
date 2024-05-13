@@ -24,9 +24,13 @@
                 <option value="others">Others</option>
             </select>
             <div id="input-node-container">
-                <label class="vertex-input" for="vertexInput">Enter initial Vertex:</label>
-                <input class="vertex-input" type="number" id="vertexInput">
-                <button class="confirm-dijkstra">Get dijkstra</button>
+<!--                    <label class="vertex-input" for="vertexInputFrom">Enter initial Vertex:</label>-->
+                    <input class="vertex-input" pattern="[0-9]" type="text" id="vertexInputFrom" placeholder="From">
+                    <p>--></p>
+                    <input class="vertex-input" pattern="[0-9]" id="vertexInputTo" placeholder="To">
+
+<!--                    <label class="vertex-input" for="vertexInputTo">Enter initial Vertex:</label>-->
+
             </div>
             <button class="button-style algorithm-button">Get Selected Algorithm</button>
             <div id="result"></div>
