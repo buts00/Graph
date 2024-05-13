@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/buts00/Graph/internal/app/graph"
 	"github.com/buts00/Graph/internal/database"
 	"github.com/gin-gonic/gin"
@@ -93,6 +94,6 @@ func (h *Handler) deleteEdge(ctx *gin.Context) {
 		}
 		ids = append(ids, id)
 	}
-
+	fmt.Println(ids)
 	ctx.JSON(http.StatusOK, gin.H{"ids": ids})
 }
