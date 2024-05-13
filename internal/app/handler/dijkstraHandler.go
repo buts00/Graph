@@ -10,9 +10,10 @@ import (
 
 func (h *Handler) dijkstra(ctx *gin.Context) {
 
-	startPoint, err := strconv.Atoi(ctx.Query("node"))
-	if err != nil {
-		NewErrorResponse(ctx, http.StatusBadRequest, "Parameter 'id' must be an integer")
+	startPoint, err := strconv.Atoi(ctx.Query("source"))
+	endPoint, err1 := strconv.Atoi(ctx.Query("destination"))
+	if err != nil || err1 != nil {
+		NewErrorResponse(ctx, http.StatusBadRequest, "Parameter 'source' and 'destination' must be an integer")
 		return
 	}
 
@@ -34,7 +35,7 @@ func (h *Handler) dijkstra(ctx *gin.Context) {
 		return
 	}
 
-	distance := algorithms.NewDijkstra().FindDijkstra(startPoint, curGraph)
+	distance := algorithms.NewDijkstra().FindDijkstra(startPoint, endPoint, curGraph)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"distance": distance,

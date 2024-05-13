@@ -49,7 +49,7 @@ func AddEdge(db *PostgresDB, edge graph.Edge) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-
+	fmt.Printf("Added edge with id %d\n", id)
 	return id, nil
 }
 
