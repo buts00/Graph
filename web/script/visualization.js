@@ -17,7 +17,6 @@ export function createGraph(data) {
             to: edge.Destination,
             label: edge.Weight.toString(),
             color: '#6895D2'
-
         });
     });
 
@@ -59,57 +58,74 @@ export function createGraph(data) {
 }
 
 export function createDistanceGraph(distance) {
+    let delay = 500; // delay in milliseconds
+    restoreGraph()
+    function addEdgeWithDelay(index) {
+        if (index < distance.length) {
+            let dist = distance[index];
 
+            if (!nodes.get(dist.Source)) {
+                nodes.add({id: dist.Source, label: dist.Source.toString()});
+            }
+            if (!nodes.get(dist.Destination)) {
+                nodes.add({id: dist.Destination, label: dist.Destination.toString()});
+            }
 
-    let newNodes = new vis.DataSet();
-    let newEdges = new vis.DataSet();
+            setTimeout(() => {
+                edges.add({
+                    from: dist.Source,
+                    to: dist.Destination,
+                    label: dist.Weight.toString(),
+                    arrows: 'to', // This will add an arrow to the edge, making it directed
+                    color: 'red'
+                });
 
-    for (let i = 0; i < distance.length - 1; i++) {
-        let sourceNode = distance[i].Node;
-        let targetNode = distance[i + 1].Node;
-
-        if (!newNodes.get(sourceNode)) {
-            newNodes.add({id:sourceNode, label: sourceNode.toString()});
+                addEdgeWithDelay(index + 1);
+            }, delay);
         }
-        if (!newNodes.get(targetNode)) {
-            newNodes.add({id:targetNode, label: targetNode.toString()});
-        }
-
-
-        newEdges.add({
-            from: sourceNode,
-            to: targetNode,
-            label: distance[i + 1].Weight.toString(),
-            arrows: 'to'
-        });
     }
 
+    addEdgeWithDelay(0);
 
-
-    let newOptions = {
+    let options = {
         nodes: {
-            shadow: { enabled: true },
-            font: { size: 25 },
+            shadow: {
+                enabled: true,
+            },
+            font: {
+                size: 25,
+            },
             shape: 'circle',
-
+            color: '#86bbf8',
         },
-        edges: { width: 3, shadow: { enabled: true }, smooth: false},
-
+        edges: {
+            width: 3,
+            shadow: {
+                enabled: true,
+            },
+            smooth: false
+        },
+        physics: {
+            barnesHut: {
+                centralGravity: 0.0,
+                gravitationalConstant: -1000,
+            },
+        },
     };
 
-    let container = document.getElementById('additional-network');
-    let graph = {nodes: newNodes, edges: newEdges};
-    let network = new vis.Network(container, graph, newOptions);
-    console.log(distance)
-
+    let container = document.getElementById('network');
+    let graph = {nodes: nodes, edges: edges};
+    let network = new vis.Network(container, graph, options);
 }
 
 export function createMst(data) {
     let delay = 400;
+    restoreGraph()
     function updateColor(index) {
         if (index < data.length) {
             let edgeIndex = data[index];
             let edge = edges.get(edgeIndex);
+            console.log(edge)
             edge.color = '#FF9843';
             edges.update(edge);
             setTimeout(() => {
@@ -117,13 +133,15 @@ export function createMst(data) {
             }, delay);
         }
     }
+
     updateColor(0);
 }
 
-export function clearMst() {
+export function restoreGraph() {
     edges.forEach(edge => {
         let curEdge = edges.get(edge.id);
         curEdge.color = '#6895D2';
+        curEdge.arrows = 'none';
         edges.update(curEdge);
     })
 }

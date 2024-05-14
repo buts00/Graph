@@ -1,5 +1,5 @@
 import {getDijkstra, getMst} from "./serverCommunication.js";
-import {clearMst} from "./visualization.js";
+import {restoreGraph} from "./visualization.js";
 import {mstPath} from "./main.js";
 
 
@@ -44,11 +44,11 @@ export async function getSelectedAlgorithm() {
     if (selectElementValue === "mst") {
         await getMst(mstPath)
     } else if (selectElementValue === "dijkstra") {
-        clearMst()
-        const nodeFrom = document.querySelector(".vertexInputFrom").value;
-        const nodeTo = document.querySelector(".vertexInputTo").value;
-        await getDijkstra(node)
+        restoreGraph()
+        const nodeFrom = document.querySelector("#vertexInputFrom").value;
+        const nodeTo = document.querySelector("#vertexInputTo").value;
+        await getDijkstra(nodeFrom, nodeTo)
     } else {
-        clearMst()
+        restoreGraph()
     }
 }

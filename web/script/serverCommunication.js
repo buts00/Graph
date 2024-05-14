@@ -35,14 +35,19 @@ export const getDijkstra = async (nodeFrom, nodeTo) => {
 
         const distance = [
             {
-                Source: 2,
-                Destination: 1,
-                Weight: 1,
+                Source: 534,
+                Destination: 634,
+                Weight: 3,
             },
             {
-                Source: 1,
-                Destination: 10,
-                Weight: 1,
+                Source: 634,
+                Destination: 3,
+                Weight: 3,
+            },
+            {
+                Source: 3,
+                Destination: 4,
+                Weight: 2,
             }
         ]
         createDistanceGraph(distance)
@@ -68,15 +73,15 @@ export function sendEdgeDataToServer(edgeData) {
         });
 }
 
-export function removeEdgeFromServer(edgeData) {
-    console.log("in fn removeedgefromserver: ", edgeData)
-    console.log("remove from server", JSON.stringify(edgeData))
+export async function removeEdgeFromServer(edges) {
+    console.log("in fn array edges: ", edges)
+    console.log("remove from server string edges", JSON.stringify(edges))
     fetch(graphPath, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(edgeData),
+        body: JSON.stringify(edges),
     })
         .then(handleResponse)
         .then(data => {
@@ -104,9 +109,11 @@ export function sendStartPointToServer(startPoint) {
 
 
 export function handleResponse(response) {
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
+    console.log(response)
+    // if (!response.ok) {
+    //     throw new Error('Network response was not ok');
+    // }
+    console.log('response is ok')
     return response.json();
 }
 
