@@ -5,14 +5,17 @@ import (
 	"sort"
 )
 
+// MST represents the Minimum Spanning Tree algorithm.
 type MST struct {
 	parent []int
 }
 
+// NewMST initializes a new instance of MST.
 func NewMST() *MST {
 	return &MST{}
 }
 
+// InitializeParent initializes the parent array for Union-Find
 func (m *MST) InitializeParent(maxValue int) {
 	m.parent = make([]int, maxValue+1)
 	for i := range m.parent {
@@ -20,6 +23,7 @@ func (m *MST) InitializeParent(maxValue int) {
 	}
 }
 
+// UnionNodes performs union operation in Union-Find.
 func (m *MST) UnionNodes(firstNode, secondNode int) {
 	parentOfFirstNode := m.GetParent(firstNode)
 	parentOfSecondNode := m.GetParent(secondNode)
@@ -30,6 +34,7 @@ func (m *MST) UnionNodes(firstNode, secondNode int) {
 	m.parent[parentOfSecondNode] = parentOfFirstNode
 }
 
+// GetParent finds the parent node in Union-Find.
 func (m *MST) GetParent(node int) int {
 	if m.parent[node] == node {
 		return node
@@ -38,19 +43,16 @@ func (m *MST) GetParent(node int) int {
 	return m.parent[node]
 }
 
+// FindMaxElement FindMaxNode finds the maximum node ID in the graph.
 func (m *MST) FindMaxElement(graph graph.Graph) int {
 	maxElement := graph.Edges[0].Source
 	for _, edge := range graph.Edges {
-		if edge.Source > maxElement {
-			maxElement = edge.Source
-		}
-		if edge.Destination > maxElement {
-			maxElement = edge.Destination
-		}
+		maxElement = max(maxElement, edge.Source, edge.Destination)
 	}
 	return maxElement
 }
 
+// ProcessGraphForMST processes the graph to find the MST edges.
 func (m *MST) ProcessGraphForMST(g graph.Graph) []int {
 	inMST := make([]int, 0)
 	copyGraph := g
@@ -72,10 +74,10 @@ func (m *MST) ProcessGraphForMST(g graph.Graph) []int {
 			m.UnionNodes(parentSource, parentDestination)
 		}
 	}
-
 	return inMST
 }
 
+// FindMST finds the Minimum Spanning Tree of the graph.
 func (m *MST) FindMST(g graph.Graph) []int {
 	return m.ProcessGraphForMST(g)
 }
