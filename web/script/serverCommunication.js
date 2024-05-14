@@ -27,30 +27,32 @@ export async function getMst() {
 
 export const getDijkstra = async (nodeFrom, nodeTo) => {
     try {
-        // const response = await fetch(dijkstraPath + `?node=${node}`)
-        // if (response.ok) {
-        //     const data = await response.json()
-        //     createDistanceGraph(data)
-        // }
+        const response = await fetch(dijkstraPath + `?s=${nodeFrom}&d=${nodeTo}`, {
+            method: "POST"
+        })
+        if (response.ok) {
+            const data = await response.json()
+            createDistanceGraph(data.path, data.distance)
+        }
 
-        const distance = [
-            {
-                Source: 534,
-                Destination: 634,
-                Weight: 3,
-            },
-            {
-                Source: 634,
-                Destination: 3,
-                Weight: 3,
-            },
-            {
-                Source: 3,
-                Destination: 4,
-                Weight: 2,
-            }
-        ]
-        createDistanceGraph(distance)
+        // const distance = [
+        //     {
+        //         Source: 534,
+        //         Destination: 634,
+        //         Weight: 3,
+        //     },
+        //     {
+        //         Source: 634,
+        //         Destination: 3,
+        //         Weight: 3,
+        //     },
+        //     {
+        //         Source: 3,
+        //         Destination: 4,
+        //         Weight: 2,
+        //     }
+        // ]
+        // createDistanceGraph(distance)
     } catch (e) {
         handleError(e)
     }

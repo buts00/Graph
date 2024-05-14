@@ -57,12 +57,14 @@ export function createGraph(data) {
 
 }
 
-export function createDistanceGraph(distance) {
+export function createDistanceGraph(path, distance) {
     let delay = 500; // delay in milliseconds
     restoreGraph()
+
+    document.querySelector('.distance-span').innerHTML = distance
     function addEdgeWithDelay(index) {
-        if (index < distance.length) {
-            let dist = distance[index];
+        if (index < path.length) {
+            let dist = path[index];
 
             if (!nodes.get(dist.Source)) {
                 nodes.add({id: dist.Source, label: dist.Source.toString()});

@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
 }
 
 #additional-network {
@@ -79,12 +80,20 @@
 #input-node-container {
     display: none;
     margin: 10px 0;
-    gap: 20px;
-    align-items: center;
 }
 
 #input-node-container p{
     margin: 0;
+}
+
+.dijkstra-inputs {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.distance-block {
+    margin-top: 10px;
 }
 
 .vertex-input {
