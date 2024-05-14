@@ -28,7 +28,7 @@ imgInput.addEventListener('change', () => {
 formNode.addEventListener('submit', async (e) => {
     e.preventDefault()
     const formData = new FormData(formNode)
-    await fetch(generalPath, { // change url to the server
+    await fetch(generalPath + "graph/image", { // change url to the server
         method: 'POST',
         body: formData
     })
