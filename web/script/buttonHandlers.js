@@ -14,7 +14,7 @@ export function setButtons() {
         if (selectElementValue === "mst") {
             inputContainer.style.display = "none";
         } else if (selectElementValue === "dijkstra") {
-            inputContainer.style.display = "flex";
+            inputContainer.style.display = "block";
         } else {
             inputContainer.style.display = "none";
         }
