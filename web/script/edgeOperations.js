@@ -93,8 +93,8 @@ export function deleteEdge() {
                 throw new Error('Invalid input. Must be 3 ints')
             }
             console.log(edges)
-            removeEdgeFromServer(edges)
         })
+        removeEdgeFromServer(edges)
     } catch (err) {
         console.log('error', err)
         textarea.value = ''
