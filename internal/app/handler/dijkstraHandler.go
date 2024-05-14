@@ -10,8 +10,8 @@ import (
 
 func (h *Handler) dijkstra(ctx *gin.Context) {
 
-	startPoint, err := strconv.Atoi(ctx.Query("source"))
-	endPoint, err1 := strconv.Atoi(ctx.Query("destination"))
+	startPoint, err := strconv.Atoi(ctx.Query("s"))
+	endPoint, err1 := strconv.Atoi(ctx.Query("d"))
 	if err != nil || err1 != nil {
 		NewErrorResponse(ctx, http.StatusBadRequest, "Parameter 'source' and 'destination' must be an integer")
 		return
@@ -22,22 +22,29 @@ func (h *Handler) dijkstra(ctx *gin.Context) {
 		NewErrorResponse(ctx, http.StatusInternalServerError, "cannot connect to db: "+err.Error())
 		return
 	}
-	isNodeExists := false
+
+	isSourceExists, isDestinationExists := false, false
 	for _, edge := range curGraph.Edges {
 		if edge.Source == startPoint || edge.Destination == startPoint {
-			isNodeExists = true
+			isSourceExists = true
+		}
+		if edge.Source == endPoint || edge.Destination == endPoint {
+			isDestinationExists = true
+		}
+		if isDestinationExists && isSourceExists {
 			break
 		}
 	}
 
-	if !isNodeExists {
+	if !isSourceExists || !isDestinationExists {
 		NewErrorResponse(ctx, http.StatusNotFound, "node not found")
 		return
 	}
 
-	distance := algorithms.NewDijkstra().FindDijkstra(startPoint, endPoint, curGraph)
+	path, distance := algorithms.NewDijkstra().FindDijkstra(startPoint, endPoint, curGraph)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"distance": distance,
+		"path":     path,
 	})
 }

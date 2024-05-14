@@ -49,7 +49,6 @@ func AddEdge(db *PostgresDB, edge graph.Edge) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-	fmt.Printf("Added edge with id %d\n", id)
 	return id, nil
 }
 
@@ -66,7 +65,7 @@ func DeleteEdge(db *PostgresDB, edge graph.Edge) (int, error) {
 
 }
 
-func IsEdgeExist(db *PostgresDB, edge graph.Edge) (bool, error) {
+func IsEdgeExist(db *PostgresDB, edge graph.Edge) (bool, bool, error) {
 	var (
 		count, reversedCount int
 	)
@@ -74,14 +73,14 @@ func IsEdgeExist(db *PostgresDB, edge graph.Edge) (bool, error) {
 
 	err := db.DB.QueryRow(query, edge.Source, edge.Destination, edge.Weight).Scan(&count)
 	if err != nil {
-		return false, err
+		return false, false, err
 	}
 
 	err = db.DB.QueryRow(query, edge.Destination, edge.Source, edge.Weight).Scan(&reversedCount)
 
 	if err != nil {
-		return false, err
+		return false, false, err
 	}
 
-	return count+reversedCount > 0, nil
+	return count > 0, reversedCount > 0, nil
 }

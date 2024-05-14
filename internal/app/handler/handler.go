@@ -38,7 +38,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		graphGroup.POST("/", h.addEdge)
 		graphGroup.DELETE("/", h.deleteEdge)
 		graphGroup.GET("/MST", h.mst)
-		graphGroup.GET("/dijkstra", h.dijkstra)
+		graphGroup.POST("/dijkstra", h.dijkstra)
 	}
 
 	return router

@@ -4,7 +4,6 @@ import (
 	"container/heap"
 	"github.com/buts00/Graph/internal/app/graph"
 	"math"
-	"sort"
 )
 
 const inf = math.MaxInt
@@ -15,10 +14,10 @@ type Pair struct {
 }
 
 type Dijkstra struct {
-	SIZE     int
-	Distance []int
-	Matrix   [][]Pair
-	Parent   []int
+	SIZE        int
+	Distance    []int
+	Matrix      [][]Pair
+	Predecessor []int
 }
 
 func NewDijkstra() *Dijkstra {
@@ -36,12 +35,12 @@ func (d *Dijkstra) FindMaxElement(graph graph.Graph) int {
 func (d *Dijkstra) initDijkstra(maxElement int, g graph.Graph) {
 	d.SIZE = len(g.Edges)
 	d.Matrix = make([][]Pair, maxElement+1)
-
 	d.Distance = make([]int, maxElement+1)
+	d.Predecessor = make([]int, maxElement+1)
 	for i := range d.Distance {
 		d.Distance[i] = math.MaxInt
+		d.Predecessor[i] = -1
 	}
-
 }
 
 func (d *Dijkstra) addEdges(g graph.Graph) {
@@ -60,44 +59,45 @@ func (d *Dijkstra) dijkstra(startPoint, destination int) {
 		var curPair Pair = (*h)[0]
 		curNode := curPair.Node
 		heap.Pop(h)
+
 		if curNode == destination {
-			break // Якщо досягли пункту призначення, виходимо з циклу
+			break
 		}
+
 		for _, pair := range d.Matrix[curNode] {
 			weight := pair.Weight
 			to := pair.Node
 			if d.Distance[to] > d.Distance[curNode]+weight {
 				d.Distance[to] = d.Distance[curNode] + weight
+				d.Predecessor[to] = curNode
 				heap.Push(h, Pair{Weight: d.Distance[to], Node: to})
 			}
 		}
 	}
-	path := []Pair{}
-	current := destination
-	for current != startPoint {
-		path = append([]Pair{{Weight: d.Distance[current], Node: current}}, path...)
-		current = d.Parent[current]
-	}
-	path = append([]Pair{{Weight: 0, Node: startPoint}}, path...)
-
 }
 
-func (d *Dijkstra) FindDijkstra(startPoint, destination int, g graph.Graph) []Pair {
+func (d *Dijkstra) FindDijkstra(startPoint, destination int, g graph.Graph) ([]graph.Edge, int) {
 	maxElement := d.FindMaxElement(g)
 	d.initDijkstra(maxElement, g)
 	d.addEdges(g)
 	d.dijkstra(startPoint, destination)
-	distance := make([]Pair, 0)
-	for i := range d.Distance {
-		if d.Distance[i] != inf {
-			distance = append(distance, Pair{Node: i, Weight: d.Distance[i]})
-		} else if len(d.Matrix[i]) > 0 {
-			distance = append(distance, Pair{Node: i, Weight: 1e9})
+
+	// Reconstruct the shortest path from startPoint to destination as an array of edges
+	path := make([]graph.Edge, 0)
+	if d.Distance[destination] != inf {
+		for at := destination; at != startPoint; at = d.Predecessor[at] {
+			prev := d.Predecessor[at]
+			// Find the weight of the edge
+			weight := 0
+			for _, pair := range d.Matrix[prev] {
+				if pair.Node == at {
+					weight = pair.Weight
+					break
+				}
+			}
+			path = append(path, graph.Edge{Source: prev, Destination: at, Weight: weight})
 		}
 	}
-	sort.Slice(distance, func(i, j int) bool {
-		return distance[i].Weight < distance[j].Weight
-	})
-	return distance
 
+	return path, d.Distance[destination]
 }
