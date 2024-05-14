@@ -12,7 +12,7 @@ export function createGraph(data) {
         }
 
         edges.add({
-            // id: edge.Id,
+            id: edge.Id,
             from: edge.Source,
             to: edge.Destination,
             label: edge.Weight.toString(),
@@ -59,7 +59,7 @@ export function createGraph(data) {
 
 export function createDistanceGraph(distance) {
     let delay = 500; // delay in milliseconds
-
+    restoreGraph()
     function addEdgeWithDelay(index) {
         if (index < distance.length) {
             let dist = distance[index];
@@ -120,11 +120,12 @@ export function createDistanceGraph(distance) {
 
 export function createMst(data) {
     let delay = 400;
-
+    restoreGraph()
     function updateColor(index) {
         if (index < data.length) {
             let edgeIndex = data[index];
             let edge = edges.get(edgeIndex);
+            console.log(edge)
             edge.color = '#FF9843';
             edges.update(edge);
             setTimeout(() => {
@@ -136,10 +137,11 @@ export function createMst(data) {
     updateColor(0);
 }
 
-export function clearMst() {
+export function restoreGraph() {
     edges.forEach(edge => {
         let curEdge = edges.get(edge.id);
         curEdge.color = '#6895D2';
+        curEdge.arrows = 'none';
         edges.update(curEdge);
     })
 }
