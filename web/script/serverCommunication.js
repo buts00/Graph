@@ -18,7 +18,6 @@ export async function getMst() {
         const response = await fetch(mstPath)
         if (response.ok) {
             const data = await response.json()
-            console.log(data)
             createMst(data)
         }
     } catch (e) {
@@ -40,7 +39,6 @@ export const getDijkstra = async (nodeFrom, nodeTo) => {
             document.querySelector('.distance-block').innerHTML = 'There is no such path'
         }
     } catch (e) {
-        console.log('gere')
         handleError(e)
     }
 };
@@ -63,8 +61,6 @@ export function sendEdgeDataToServer(edgeData) {
 }
 
 export async function removeEdgeFromServer(edges) {
-    console.log("in fn array edges: ", edges)
-    console.log("remove from server string edges", JSON.stringify(edges))
     fetch(graphPath, {
         method: 'DELETE',
         headers: {
@@ -82,11 +78,9 @@ export async function removeEdgeFromServer(edges) {
 }
 
 export function handleResponse(response) {
-    console.log(response)
     // if (!response.ok) {
     //     throw new Error('Network response was not ok');
     // }
-    console.log('response is ok')
     return response.json();
 }
 

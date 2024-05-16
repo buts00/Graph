@@ -34,7 +34,6 @@ export function clearInputFields() {
 
 export async function getSelectedAlgorithm() {
     const selectElementValue = document.getElementById("algorithmSelect").value;
-    console.log(selectElementValue)
     if (selectElementValue === "mst") {
         await getMst(mstPath)
     } else if (selectElementValue === "dijkstra") {
