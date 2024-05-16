@@ -65,7 +65,12 @@ export function createDistanceGraph(path, distance) {
     function addEdgeWithDelay(index) {
         if (index < path.length) {
             let dist = path[index];
-
+            console.log(dist)
+            edges.forEach(edge => {
+                if (edge.from === dist.Source && edge.to === dist.Destination) {
+                    edges.remove(edge.id)
+                }
+            })
             if (!nodes.get(dist.Source)) {
                 nodes.add({id: dist.Source, label: dist.Source.toString()});
             }
