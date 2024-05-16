@@ -27,14 +27,24 @@ imgInput.addEventListener('change', () => {
 
 formNode.addEventListener('submit', async (e) => {
     e.preventDefault()
-    const formData = new FormData(formNode)
-    await fetch(generalPath + "graph/image", { // change url to the server
-        method: 'POST',
-        body: formData
-    })
-    await getGraph()
-    imgPreviewNode.style.display = 'none'
-    imgInput.value = ''
+    try {
+        const formData = new FormData(formNode)
+        const res = await fetch(generalPath + "graph/image", { // change url to the server
+            method: 'POST',
+            body: formData
+        })
+        const data = await res.json()
+
+        if (data.status !== 200) {
+            throw new Error(data.message.split(':')[0] || 'Something went wrong')
+        }
+        await getGraph()
+        imgPreviewNode.style.display = 'none'
+        imgInput.value = ''
+    } catch (e) {
+        alert(e.message)
+    }
+
 })
 
 

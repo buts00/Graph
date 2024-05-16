@@ -1,12 +1,19 @@
-import {getDijkstra, getMst} from "./serverCommunication.js";
+import {getDijkstra, getGraph, getMst} from "./serverCommunication.js";
 import {restoreGraph} from "./visualization.js";
-import {mstPath} from "./main.js";
+import {graphPath, mstPath} from "./main.js";
 
 
 export function isValidInput(value) {
-    return /^[1-9]\d*$/.test(value);
+    return /^[0-9]\d*$/.test(value);
 }
 
+export const clearGraph = async () => {
+    await fetch(graphPath, {
+        method: "DELETE",
+        data: JSON.stringify([])
+    })
+    await getGraph()
+}
 
 export function getDataFromInputs() {
     let fromValue = document.getElementById("from").value;
@@ -19,28 +26,14 @@ export function getDataFromInputs() {
     }
 }
 
-
 export function clearInputFields() {
     document.getElementById("from").value = "";
     document.getElementById("to").value = "";
     document.getElementById("weight").value = "";
 }
 
-
-// export function processDataFromDijkstra() {
-//     let vertexValue = document.getElementById("vertexInput").value;
-//     let node = nodes.get(parseInt(vertexValue));
-//     if (!isValidInput(vertexValue) || node == null) {
-//         // alert("Enter valid vertex");
-//         return
-//     }
-//     document.getElementById("vertexInput").value = "";
-//     sendStartPointToServer(parseInt(vertexValue),dijkstraPath)
-// }
-
 export async function getSelectedAlgorithm() {
     const selectElementValue = document.getElementById("algorithmSelect").value;
-    console.log(selectElementValue)
     if (selectElementValue === "mst") {
         await getMst(mstPath)
     } else if (selectElementValue === "dijkstra") {
