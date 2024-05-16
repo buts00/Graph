@@ -61,7 +61,7 @@ func (h *Handler) sendImage(ctx *gin.Context) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		NewErrorResponse(ctx, http.StatusInternalServerError, "Unexpected status code from Flask application")
+		NewErrorResponse(ctx, resp.StatusCode, "Unexpected status code from Flask application: "+err.Error())
 		return
 	}
 
