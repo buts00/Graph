@@ -52,9 +52,7 @@ def process_image():
                 })
                 added_edges.add((vertex_id, adj_vertex_id))
 
-    print(json_data)
-
-    return jsonify({'result': json_data}), 200
+    return jsonify(json_data), 200
 
 
 if __name__ == "__main__":

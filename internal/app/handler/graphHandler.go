@@ -72,10 +72,11 @@ func (h *Handler) deleteEdge(ctx *gin.Context) {
 				return
 			}
 		} else if isReversedEdgeExist {
+			edge.Source, edge.Destination = edge.Destination, edge.Source
 			id, err := database.DeleteEdge(h.DB, edge)
 			ids = append(ids, id)
 			if err != nil {
-				NewErrorResponse(ctx, http.StatusInternalServerError, "failed to delete edge: "+err.Error())
+				NewErrorResponse(ctx, http.StatusInternalServerError, "failed to delete reversed edge: "+err.Error())
 				return
 			}
 		}

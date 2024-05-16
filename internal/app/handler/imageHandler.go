@@ -2,13 +2,17 @@ package handler
 
 import (
 	"bytes"
-	"fmt"
+	"encoding/json"
+	"github.com/buts00/Graph/internal/app/graph"
+	"github.com/buts00/Graph/internal/database"
 	"github.com/gin-gonic/gin"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 )
+
+const flaskServer = "http://localhost:14880"
 
 func (h *Handler) sendImage(ctx *gin.Context) {
 	file, err := ctx.FormFile("file")
@@ -49,7 +53,7 @@ func (h *Handler) sendImage(ctx *gin.Context) {
 	}
 
 	// Send the multipart request to the Flask application
-	resp, err := http.Post("http://localhost:14880", writer.FormDataContentType(), &requestBody)
+	resp, err := http.Post(flaskServer, writer.FormDataContentType(), &requestBody)
 	if err != nil {
 		NewErrorResponse(ctx, http.StatusInternalServerError, "Error sending request to Flask application: "+err.Error())
 		return
@@ -68,6 +72,34 @@ func (h *Handler) sendImage(ctx *gin.Context) {
 		return
 	}
 
-	fmt.Println(string(responseBytes))
+	err = handleResponse(responseBytes, h)
+	if err != nil {
+		NewErrorResponse(ctx, http.StatusInternalServerError, "cannot handle response from flask: "+err.Error())
+		return
+	}
+
 	ctx.String(http.StatusOK, string(responseBytes))
+}
+
+func handleResponse(bytes []byte, h *Handler) error {
+	err := database.ClearGraph(h.DB)
+	if err != nil {
+		return err
+	}
+
+	var edges []graph.Edge
+
+	err = json.Unmarshal(bytes, &edges)
+	if err != nil {
+		return err
+	}
+
+	for _, edge := range edges {
+		_, err = database.AddEdge(h.DB, edge)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

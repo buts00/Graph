@@ -23,16 +23,3 @@ func Run(port string, handler http.Handler) error {
 
 	return server.httpServer.ListenAndServe()
 }
-
-//func Start(port string, db *database.PostgresDB) error {
-//	router := mux.NewRouter()
-//	router.HandleFunc("/", handler.HomeHandler)
-//	router.HandleFunc("/graph", handler.GraphHandler(db))
-//	router.HandleFunc("/graph/MST", handler.MSTHandler(db))
-//	router.HandleFunc("/graph/dijkstra", handler.DijkstraHandler(db))
-//
-//	if err := http.ListenAndServe(port, router); err != nil {
-//		return err
-//	}
-//	return nil
-//}
