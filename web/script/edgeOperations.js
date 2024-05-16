@@ -20,10 +20,8 @@ export function addEdge() {
     const textareaContent = textarea.value.trim().split('\n')
     const edges = []
     try {
-        console.log(textareaContent)
         textareaContent.forEach(str => {
             const elements = str.split(' ').map(el => Number.parseInt(el))
-            console.log(elements)
             if (elements.length === 3) {
                 const [Source, Destination, Weight] = elements;
                 if (isValidInput(Source) && isValidInput(Destination) && isValidInput(Weight)) {
@@ -44,7 +42,6 @@ export function addEdge() {
         textarea.style.borderColor = 'black'
         sendEdgeDataToServer(edges)
     } catch (err) {
-        console.log(err)
         textarea.value = ''
         textarea.style.borderColor = 'red'
     }
@@ -55,7 +52,6 @@ export function deleteEdge() {
     const textareaContent = textarea.value.trim().split('\n')
     const edges = []
     try {
-        console.log(textareaContent)
         textareaContent.forEach(str => {
             const elements = str.split(' ').map(el => Number.parseInt(el))
             if (elements.length === 3) {
@@ -77,7 +73,6 @@ export function deleteEdge() {
         }
         removeEdgeFromServer(edges)
     } catch (err) {
-        console.log('error', err)
         textarea.value = ''
         textarea.style.borderColor = 'red'
     }

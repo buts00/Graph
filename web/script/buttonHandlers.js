@@ -1,12 +1,12 @@
 import {addEdge, deleteEdge} from "./edgeOperations.js";
-import {getSelectedAlgorithm} from "./graphFunctions.js";
+import {clearGraph, getSelectedAlgorithm} from "./graphFunctions.js";
+
 
 export function setButtons() {
     const addEdgeButton = document.querySelector('.add-edge');
     addEdgeButton.addEventListener('click', addEdge)
     const removeEdgeButton = document.querySelector('.remove-edge');
     removeEdgeButton.addEventListener('click', deleteEdge)
-
     const selectElement = document.getElementById("algorithmSelect");
     selectElement.addEventListener('change', (event) => {
         let selectElementValue = event.target.value;
@@ -19,9 +19,20 @@ export function setButtons() {
             inputContainer.style.display = "none";
         }
     })
-
     const selectAlgorithmButton = document.querySelector('.algorithm-button');
     selectAlgorithmButton.addEventListener('click', getSelectedAlgorithm)
-    // const confirmDijkstraButton = document.querySelector('.confirm-dijkstra');
-    // confirmDijkstraButton.addEventListener('click', processDataFromDijkstra)
+    const clearButton = document.querySelector('.clear-button');
+    clearButton.addEventListener('click',  clearGraph)
+    const hideButton = document.querySelector('.hide-button');
+    hideButton.addEventListener('click', () => {
+        const showHideImage = document.querySelector('.show-hide-img')
+        const mainContainer = document.querySelector('.main-container')
+        if (showHideImage.src.includes('hide')) {
+            showHideImage.src = 'img/show.svg'
+            mainContainer.classList.add('hidden')
+        } else {
+            showHideImage.src = 'img/hide.svg'
+            mainContainer.classList.remove('hidden')
+        }
+    })
 }

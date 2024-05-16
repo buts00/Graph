@@ -13,11 +13,7 @@
 </head>
 
 <body>
-
-<script type="module" src="script/main.js"></script>
-
 <div id="network"></div>
-
 <div class="main-container">
     <div class="container-algo">
         <label class="input-algorithm" for="algorithmSelect">Select an Algorithm:</label>
@@ -38,10 +34,11 @@
         <div id="result"></div>
     </div>
     <div class="input-container">
-            <textarea name="textarea" id="textarea" cols="30" rows="10"
-                      placeholder="[from] [to] [weight] &#10;Only integers &#10;1 2 3 &#10;2 3 1"></textarea>
+        <textarea name="textarea" id="textarea" cols="30" rows="10"
+                  placeholder="[from] [to] [weight] &#10;Only integers &#10;1 2 3 &#10;2 3 1"></textarea>
         <button class="button-style add-edge">Add Edge</button>
         <button class="button-style remove-edge">Remove Edge</button>
+        <button class="button-style clear-button">Clear</button>
         <form class="form">
             <input class="img-input" accept="image/*" name="file" id="file" type="file" hidden>
             <img class="img-preview" src="" alt="preview">
@@ -49,12 +46,14 @@
                 graph image</label>
             <button type="submit" class="button-style">Upload</button>
         </form>
-        <button class="clear">Clear</button>
-
     </div>
-
-
 </div>
+<button class="hide-button"><img class="show-hide-img" src="img/hide.svg" alt="show"></button>
+
+
+
+<script type="module" src="script/main.js"></script>
+
 </body>
 
 </html>

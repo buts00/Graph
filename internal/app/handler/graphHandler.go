@@ -56,7 +56,13 @@ func (h *Handler) deleteEdge(ctx *gin.Context) {
 		NewErrorResponse(ctx, http.StatusBadRequest, "failed to parse new Edge: "+err.Error())
 		return
 	}
-
+	if len(edges) == 0 {
+		err := database.ClearGraph(h.DB)
+		if err != nil {
+			NewErrorResponse(ctx, http.StatusInternalServerError, "failed to clear graph: "+err.Error())
+		}
+		return
+	}
 	for _, edge := range edges {
 		isEdgeExist, isReversedEdgeExist, err := database.IsEdgeExist(h.DB, edge)
 		if err != nil {

@@ -1,8 +1,4 @@
-import json
-
 import numpy as np
-import requests
-
 from flask import Flask, request, jsonify
 import cv2 as cv
 from preprocessing import preprocess
@@ -16,14 +12,14 @@ app = Flask(__name__)
 @app.route('/', methods=['POST'])
 def process_image():
     if 'file' not in request.files:
-        return jsonify({'error': 'No file part in the request'}), 400
+        return jsonify({'error': 'No file part in the request'}), 500
 
     image_data = request.files['file']
     image_buffer = image_data.read()
     image = cv.imdecode(np.frombuffer(image_buffer, np.uint8), cv.IMREAD_COLOR)
 
     if image is None:
-        return jsonify({'error': 'Error opening image'}), 400
+        return jsonify({'error': 'Error opening image'}), 500
 
     # Попередня обробка
     source, preprocessed = preprocess(image)
