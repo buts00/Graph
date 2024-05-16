@@ -37,6 +37,11 @@ formNode.addEventListener('submit', async (e) => {
     imgInput.value = ''
 })
 
+document.querySelector('.clear').addEventListener('click', () => {
+    edges.clear()
+    nodes.clear()
+})
+
 
 main()
 

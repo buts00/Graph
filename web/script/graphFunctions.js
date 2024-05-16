@@ -4,7 +4,7 @@ import {mstPath} from "./main.js";
 
 
 export function isValidInput(value) {
-    return /^[1-9]\d*$/.test(value);
+    return /^[0-9]\d*$/.test(value);
 }
 
 
