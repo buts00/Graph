@@ -60,8 +60,7 @@ export function createGraph(data) {
 export function createDistanceGraph(path, distance) {
     let delay = 500; // delay in milliseconds
     restoreGraph()
-
-    document.querySelector('.distance-span').innerHTML = distance
+    document.querySelector('.distance-span').innerHTML = distance === '-1' ? 'There is no such path' : distance
     function addEdgeWithDelay(index) {
         if (index < path.length) {
             let dist = path[index];

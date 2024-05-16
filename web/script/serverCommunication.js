@@ -12,6 +12,7 @@ export function getGraph() {
         .catch(handleError);
 }
 
+
 export async function getMst() {
     try {
         const response = await fetch(mstPath)
@@ -30,30 +31,16 @@ export const getDijkstra = async (nodeFrom, nodeTo) => {
         const response = await fetch(dijkstraPath + `?s=${nodeFrom}&d=${nodeTo}`, {
             method: "POST"
         })
+        const data = await response.json()
         if (response.ok) {
-            const data = await response.json()
             createDistanceGraph(data.path, data.distance)
         }
-
-        // const distance = [
-        //     {
-        //         Source: 534,
-        //         Destination: 634,
-        //         Weight: 3,
-        //     },
-        //     {
-        //         Source: 634,
-        //         Destination: 3,
-        //         Weight: 3,
-        //     },
-        //     {
-        //         Source: 3,
-        //         Destination: 4,
-        //         Weight: 2,
-        //     }
-        // ]
-        // createDistanceGraph(distance)
+        const {distance} = data
+        if (!distance) {
+            document.querySelector('.distance-block').innerHTML = 'There is no such path'
+        }
     } catch (e) {
+        console.log('gere')
         handleError(e)
     }
 };
@@ -93,22 +80,6 @@ export async function removeEdgeFromServer(edges) {
             handleError(err)
         });
 }
-
-export function sendStartPointToServer(startPoint) {
-    fetch(dijkstraPath, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(startPoint),
-    })
-        .then(handleResponse)
-        .then(data => {
-            createDistanceGraph(data)
-        })
-        .catch(handleError);
-}
-
 
 export function handleResponse(response) {
     console.log(response)
