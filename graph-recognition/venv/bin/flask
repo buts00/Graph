@@ -1,4 +1,4 @@
-#!/Users/vanyashumilo/Desktop/graph/Graph/graph-recognition/venv/bin/python3.12
+#!/Users/buts/Project/Go/Graph/graph-recognition/venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys
