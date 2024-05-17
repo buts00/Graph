@@ -30,13 +30,18 @@ formNode.addEventListener('submit', async (e) => {
     e.preventDefault()
     try {
         const formData = new FormData(formNode)
-        const res = await fetch(generalPath + "graph/image", { // change url to the server
-            method: 'POST',
-            body: formData
-        })
-        const data = await res.json()
-
-
+        if (!imgInput.files[0]) {
+            throw new Error('You must upload an image')
+        }
+        try {
+            const res = await fetch(generalPath + "graph/image", {
+                method: 'POST',
+                body: formData
+            })
+        } catch {
+            throw new Error('There is no valid graph in the image')
+        }
+        // const data = await res.json()
         await getGraph()
         imgPreviewNode.style.display = 'none'
         imgInput.value = ''
