@@ -25,10 +25,10 @@ func (h *Handler) dijkstra(ctx *gin.Context) {
 
 	isSourceExists, isDestinationExists := false, false
 	for _, edge := range curGraph.Edges {
-		if edge.Source == startPoint || edge.Destination == startPoint {
+		if *edge.Source == startPoint || *edge.Destination == startPoint {
 			isSourceExists = true
 		}
-		if edge.Source == endPoint || edge.Destination == endPoint {
+		if *edge.Source == endPoint || *edge.Destination == endPoint {
 			isDestinationExists = true
 		}
 		if isDestinationExists && isSourceExists {

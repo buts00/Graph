@@ -60,23 +60,23 @@ export function createGraph(data) {
 export function createDistanceGraph(path, distance) {
     let delay = 500; // delay in milliseconds
     restoreGraph()
-    document.querySelector('.distance-span').innerHTML = distance === '-1' ? 'There is no such path' : distance
+    document.querySelector('.distance-span').innerHTML = distance === -1 ? 'There is no such path' : distance
+    path.reverse()
     function addEdgeWithDelay(index) {
         if (index < path.length) {
             let dist = path[index];
-            edges.forEach(edge => {
-                if (edge.from === dist.Source && edge.to === dist.Destination) {
-                    edges.remove(edge.id)
-                }
-            })
             if (!nodes.get(dist.Source)) {
                 nodes.add({id: dist.Source, label: dist.Source.toString()});
             }
             if (!nodes.get(dist.Destination)) {
                 nodes.add({id: dist.Destination, label: dist.Destination.toString()});
             }
-
             setTimeout(() => {
+                edges.forEach(edge => {
+                    if (edge.from === dist.Source && edge.to === dist.Destination) {
+                        edges.remove(edge.id)
+                    }
+                })
                 edges.add({
                     from: dist.Source,
                     to: dist.Destination,
@@ -87,10 +87,12 @@ export function createDistanceGraph(path, distance) {
 
                 addEdgeWithDelay(index + 1);
             }, delay);
+
         }
     }
 
     addEdgeWithDelay(0);
+
 
     let options = {
         nodes: {
@@ -124,7 +126,7 @@ export function createDistanceGraph(path, distance) {
 }
 
 export function createMst(data) {
-    let delay = 400;
+    let delay = 200;
     restoreGraph()
     function updateColor(index) {
         if (index < data.length) {

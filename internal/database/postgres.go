@@ -44,7 +44,7 @@ func Edges(db *PostgresDB) (graph.Graph, error) {
 		if err := row.Scan(&id, &source, &destination, &weight); err != nil {
 			return graph.Graph{}, err
 		}
-		cur.Edges = append(cur.Edges, graph.Edge{Id: id, Source: source, Destination: destination, Weight: weight})
+		cur.Edges = append(cur.Edges, graph.Edge{Id: id, Source: &source, Destination: &destination, Weight: weight})
 	}
 
 	return cur, nil
