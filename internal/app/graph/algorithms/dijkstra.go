@@ -32,7 +32,7 @@ func NewDijkstra() *Dijkstra {
 func (d *Dijkstra) FindMaxElement(graph graph.Graph) int {
 	maxElement := 0
 	for _, edge := range graph.Edges {
-		maxElement = max(maxElement, edge.Source, edge.Destination)
+		maxElement = max(maxElement, *edge.Source, *edge.Destination)
 	}
 	return maxElement
 }
@@ -102,7 +102,7 @@ func (d *Dijkstra) FindDijkstra(startPoint, destination int, g graph.Graph) ([]g
 					break
 				}
 			}
-			path = append(path, graph.Edge{Source: prev, Destination: at, Weight: weight})
+			path = append(path, graph.Edge{Source: &prev, Destination: &at, Weight: weight})
 		}
 	}
 	if d.Distance[destination] == inf {
