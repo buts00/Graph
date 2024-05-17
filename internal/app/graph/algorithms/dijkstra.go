@@ -53,9 +53,13 @@ func (d *Dijkstra) initDijkstra(maxElement int, g graph.Graph) {
 func (d *Dijkstra) addEdges(g graph.Graph) {
 	for i := 0; i < d.SIZE; i++ {
 		_, src, dest, weight := g.AllValues(g.Edges[i])
+		if src == dest {
+			continue
+		}
 		d.Matrix[src] = append(d.Matrix[src], Pair{weight, dest})
 		d.Matrix[dest] = append(d.Matrix[dest], Pair{weight, src})
 	}
+
 }
 
 // dijkstra runs the Dijkstra algorithm
@@ -92,21 +96,21 @@ func (d *Dijkstra) FindDijkstra(startPoint, destination int, g graph.Graph) ([]g
 	d.dijkstra(startPoint, destination)
 
 	path := make([]graph.Edge, 0)
-	if d.Distance[destination] != inf {
-		for at := destination; at != startPoint; at = d.Predecessor[at] {
-			prev := d.Predecessor[at]
-			weight := 0
-			for _, pair := range d.Matrix[prev] {
-				if pair.Node == at {
-					weight = pair.Weight
-					break
-				}
-			}
-			path = append(path, graph.Edge{Source: &prev, Destination: &at, Weight: weight})
-		}
-	}
 	if d.Distance[destination] == inf {
 		return path, -1
 	}
+
+	for at := destination; at != startPoint; at = d.Predecessor[at] {
+		prev := d.Predecessor[at]
+		weight := 0
+		for _, pair := range d.Matrix[prev] {
+			if pair.Node == at {
+				weight = pair.Weight
+				break
+			}
+		}
+		path = append(path, graph.Edge{Source: &prev, Destination: &at, Weight: weight})
+	}
+
 	return path, d.Distance[destination]
 }
