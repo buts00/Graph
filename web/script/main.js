@@ -26,6 +26,7 @@ imgInput.addEventListener('change', () => {
 })
 
 formNode.addEventListener('submit', async (e) => {
+    console.log('in submit form')
     e.preventDefault()
     try {
         const formData = new FormData(formNode)
@@ -35,12 +36,11 @@ formNode.addEventListener('submit', async (e) => {
         })
         const data = await res.json()
 
-        if (data.status !== 200) {
-            throw new Error(data.message.split(':')[0] || 'Something went wrong')
-        }
+
         await getGraph()
         imgPreviewNode.style.display = 'none'
         imgInput.value = ''
+
     } catch (e) {
         alert(e.message)
     }

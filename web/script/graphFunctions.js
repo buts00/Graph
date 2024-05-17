@@ -4,7 +4,7 @@ import {graphPath, mstPath} from "./main.js";
 
 
 export function isValidInput(value) {
-    return /^[0-9]\d*$/.test(value);
+    return /^\d+$/.test(value);
 }
 
 export const clearGraph = async () => {

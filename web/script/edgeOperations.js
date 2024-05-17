@@ -20,6 +20,7 @@ export function addEdge() {
     const textareaContent = textarea.value.trim().split('\n')
     const edges = []
     try {
+        console.log(textareaContent)
         textareaContent.forEach(str => {
             const elements = str.split(' ').map(el => Number.parseInt(el))
             if (elements.length === 3) {
@@ -33,6 +34,7 @@ export function addEdge() {
                     edges.push({ Source, Destination, Weight: 1 })
                 }
             }
+            console.log(edges)
         })
         if (edges.length === 0) {
             textarea.value = ''
