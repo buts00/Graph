@@ -124,7 +124,7 @@ export function createDistanceGraph(path, distance) {
 }
 
 export function createMst(data) {
-    let delay = 400;
+    let delay = 200;
     restoreGraph()
     function updateColor(index) {
         if (index < data.length) {

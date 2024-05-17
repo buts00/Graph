@@ -9,9 +9,10 @@ export function isValidInput(value) {
 
 export const clearGraph = async () => {
     await fetch(graphPath, {
-        method: "DELETE",
-        data: JSON.stringify([])
-    })
+            method: "DELETE",
+            body: JSON.stringify([])
+        }
+    )
     await getGraph()
 }
 
@@ -35,6 +36,7 @@ export function clearInputFields() {
 export async function getSelectedAlgorithm() {
     const selectElementValue = document.getElementById("algorithmSelect").value;
     if (selectElementValue === "mst") {
+        await getGraph()
         await getMst(mstPath)
     } else if (selectElementValue === "dijkstra") {
         restoreGraph()
