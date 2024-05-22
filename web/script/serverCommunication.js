@@ -1,8 +1,8 @@
 import {createDistanceGraph, createGraph, createMst} from "./visualization.js";
 import {dijkstraPath, graphPath, mstPath} from "./main.js";
 
-export function getGraph() {
-    fetch(graphPath, {
+export async function getGraph() {
+    await fetch(graphPath, {
         method: "GET"
     })
         .then(handleResponse)

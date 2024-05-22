@@ -127,12 +127,14 @@ export function createDistanceGraph(path, distance) {
 }
 
 export function createMst(data) {
-    let delay = 200;
+    let delay = 300;
     restoreGraph()
+    edges.forEach(e => console.log(e))
     function updateColor(index) {
         if (index < data.length) {
             let edgeIndex = data[index];
             let edge = edges.get(edgeIndex);
+            console.log(edgeIndex, edge)
             edge.color = '#FF9843';
             edges.update(edge);
             setTimeout(() => {
