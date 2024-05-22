@@ -45,9 +45,9 @@ func (m *MST) GetParent(node int) int {
 
 // FindMaxElement FindMaxNode finds the maximum node ID in the graph.
 func (m *MST) FindMaxElement(graph graph.Graph) int {
-	maxElement := graph.Edges[0].Source
+	maxElement := *graph.Edges[0].Source
 	for _, edge := range graph.Edges {
-		maxElement = max(maxElement, edge.Source, edge.Destination)
+		maxElement = max(maxElement, *edge.Source, *edge.Destination)
 	}
 	return maxElement
 }
@@ -67,8 +67,8 @@ func (m *MST) ProcessGraphForMST(g graph.Graph) []int {
 	m.InitializeParent(maxElement)
 
 	for _, edge := range copyGraph.Edges {
-		parentSource := m.GetParent(edge.Source)
-		parentDestination := m.GetParent(edge.Destination)
+		parentSource := m.GetParent(*edge.Source)
+		parentDestination := m.GetParent(*edge.Destination)
 		if parentSource != parentDestination {
 			inMST = append(inMST, edge.Id)
 			m.UnionNodes(parentSource, parentDestination)

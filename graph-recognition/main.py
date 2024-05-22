@@ -28,12 +28,12 @@ def process_image():
     filled_image, edgeless = fill_vertices(preprocessed)
 
     # Знаходження вершин
-    vertices_list = find_vertices(filled_image, edgeless)
+    vertices_list = find_vertices(edgeless)
     if not vertices_list:
         return jsonify({'error': 'No vertices found'}), 400
 
     # Визначення топології
-    vertices_list = recognize_topology(vertices_list, filled_image, source)
+    vertices_list = recognize_topology(vertices_list, filled_image)
 
     json_data = []
     added_edges = set()
