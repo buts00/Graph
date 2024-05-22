@@ -10,23 +10,17 @@ VERTEX_AREA_FACTOR: float = 1.3
 SEARCH_RADIUS_CONST = 15
 
 
-def recognize_topology(vertices_list: list, filled_image: np.ndarray, visualised: np.ndarray) -> list:
+def recognize_topology(vertices_list: list, filled_image: np.ndarray) -> list:
     filled_image = remove_vertices(vertices_list, filled_image, VERTEX_AREA_FACTOR)
-    lines_list, backend = lines_from_contours(filled_image, visualised.copy())
+    lines_list = lines_from_contours(filled_image)
 
-    search_radius = int(np.average(np.array([v.r for v in vertices_list])))
-    search_radius = search_radius if search_radius > SEARCH_RADIUS_CONST else SEARCH_RADIUS_CONST
-    linked_lines, backend = link_nearby_endpoints(lines_list, backend, 1.5 * search_radius, 20)
-    vertices_list, backend, visualised = edges_from_lines(linked_lines, vertices_list, backend, visualised, 3.1)
-
-    debug = False
-    if debug:
-        cv.imshow("removed vertices and lines intersections", filled_image)
-        cv.imshow("\"backend\" - colors description in topology.py", backend)
-        cv.imshow("final results - green: vertices, red: edges", visualised)
-        cv.waitKey(0)
+    search_radius = int(np.mean([v.r for v in vertices_list]))
+    search_radius = max(search_radius, SEARCH_RADIUS_CONST) 
+    linked_lines = link_nearby_endpoints(lines_list, 1.5 * search_radius, 20)
+    vertices_list = edges_from_lines(linked_lines, vertices_list, 3.1)
 
     return vertices_list
+
 
 
 def remove_vertices(vertices_list: list, filled_image: np.ndarray, vertex_area_factor: float) -> np.ndarray:
@@ -35,20 +29,16 @@ def remove_vertices(vertices_list: list, filled_image: np.ndarray, vertex_area_f
     return filled_image
 
 
-def lines_from_contours(filled_image: np.ndarray, backend: np.ndarray, min_line_length: float = 10) \
-        -> Tuple[list, np.ndarray]:
+def lines_from_contours(filled_image: np.ndarray, min_line_length: float = 10) -> list:
     lines_list = []
     contours, hierarchy = cv.findContours(filled_image, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
-    cv.drawContours(backend, contours, -1, (0, 255, 255), 1)
     for i in range(0, len(contours)):
         if hierarchy[0][i][3] == -1:
             cnt = contours[i]
             pt1, pt2 = fit_line(cnt)
             if pt1 is not None and pt2 is not None and distance_L2(pt1, pt2) >= min_line_length:
-                cv.circle(backend, (pt1[0], pt1[1]), 4, (255, 255, 0), cv.FILLED)
-                cv.circle(backend, (pt2[0], pt2[1]), 4, (255, 255, 0), cv.FILLED)
                 lines_list.append([pt1, pt2])
-    return lines_list, backend
+    return lines_list
 
 
 def fit_line(edge_contour: list, epsilon: float = 0.01, delta: float = 0.01) -> Tuple[Tuple[int, int], Tuple[int, int]]:
@@ -63,8 +53,7 @@ def fit_line(edge_contour: list, epsilon: float = 0.01, delta: float = 0.01) -> 
     return None, None
 
 
-def link_nearby_endpoints(lines_list: list, backend: np.ndarray, search_radius: float, angle_threshold: float) \
-        -> Tuple[list, np.ndarray]:
+def link_nearby_endpoints(lines_list: list, search_radius: float, angle_threshold: float) -> list:
     lines_list = sorted(lines_list, key=functools.cmp_to_key(lines_lengths_compare), reverse=True)
     for i, line in enumerate(lines_list):
         if line is None:
@@ -74,9 +63,6 @@ def link_nearby_endpoints(lines_list: list, backend: np.ndarray, search_radius: 
         for j in range(2):
             main_point = line[j]
             other_point = line[(j + 1) % 2]
-            cv.circle(backend, tuple(main_point), int(search_radius), (255, 0, 255), 1)
-            cv.line(backend, (main_point[0] - int(search_radius), main_point[1]),
-                    (main_point[0] + int(search_radius), main_point[1]), (255, 0, 255), 1)
             if main_point is None or other_point is None:
                 break
             else:
@@ -91,11 +77,7 @@ def link_nearby_endpoints(lines_list: list, backend: np.ndarray, search_radius: 
                         lines_list[i][j] = lines_list[k][(l + 1) % 2]
                         lines_list[k] = None
     final_lines_list = [line for line in lines_list if line is not None]
-    for line in final_lines_list:
-        pt1, pt2 = line
-        cv.line(backend, tuple(pt1), tuple(pt2), (0, 140, 255), 2)
-
-    return final_lines_list, backend
+    return final_lines_list
 
 
 def lines_lengths_compare(line1: Tuple[Tuple[int, int], Tuple[int, int]],
@@ -111,8 +93,8 @@ def lines_lengths_compare(line1: Tuple[Tuple[int, int], Tuple[int, int]],
 
 
 def vector_angle(start_pt: tuple[int, int], end_pt: Tuple[int, int]) -> float:
-    tmp_vec = np.array(start_pt) - np.array(end_pt)
-    angle = np.arctan2(tmp_vec[0], tmp_vec[1]) * 180 / np.pi + 180
+    tmp_vec = np.array(end_pt) - np.array(start_pt)
+    angle = np.degrees(np.arctan2(tmp_vec[1], tmp_vec[0]))
     return angle
 
 
@@ -120,39 +102,31 @@ def find_endpoints_in_area(lines_list: list, start_index: int, x: int, y: int, r
         -> np.ndarray:
     in_area_list = []
     endpoint = np.array([x, y])
-    for i in range(start_index, len(lines_list)):
-        if lines_list[i] is None:
+    for i, line in enumerate(lines_list[start_index:], start=start_index):
+        if line is None:
             continue
-        for j in range(0, 2):
-            tmp_endpoint = np.array([lines_list[i][j][0], lines_list[i][j][1]])
-            if distance_L2(endpoint, tmp_endpoint) <= radius:  # calculate distance
-                other_endpoint = np.array([lines_list[i][(j + 1) % 2][0], lines_list[i][(j + 1) % 2][1]])
+        for j, tmp_endpoint in enumerate(line):
+            tmp_endpoint = np.array(tmp_endpoint)
+            if np.linalg.norm(endpoint - tmp_endpoint) <= radius:
+                other_endpoint = line[(j + 1) % 2]
                 tmp_angle = vector_angle(tmp_endpoint, other_endpoint)
                 diff = abs(main_angle - tmp_angle)
                 delta = diff if diff <= 180 else 360 - diff
                 in_area_list.append([i, j, delta])
-    ret_arr = np.array(in_area_list) if in_area_list else None
-    return ret_arr
+    return np.array(in_area_list) if in_area_list else None
 
 
-def edges_from_lines(lines_list: List, vertices_list: List, backend: np.ndarray, final_results: np.ndarray,
-                     within_r_factor: float) -> Tuple[List, np.ndarray, np.ndarray]:
+def edges_from_lines(lines_list: List, vertices_list: List, within_r_factor: float) -> Tuple[List, np.ndarray]:
     for pt1, pt2 in lines_list:
         index1 = find_nearest_vertex(pt1, vertices_list)
         index2 = find_nearest_vertex(pt2, vertices_list)
         v1, v2 = (vertices_list[index1], vertices_list[index2])
-        cv.circle(backend, (v1.x, v1.y), round(v1.r * within_r_factor), (127, 0, 127), thickness=2)
-        cv.circle(backend, (v2.x, v2.y), round(v2.r * within_r_factor), (127, 0, 127), thickness=2)
         if point_within_radius(pt1, v1, within_r_factor) and point_within_radius(pt2, v2, within_r_factor) \
                 and index1 != index2 \
                 and index2 not in v1.adjacency_list and index1 not in v2.adjacency_list:
             v1.adjacency_list.append(index2)
             v2.adjacency_list.append(index1)
-            cv.line(final_results, (v1.x, v1.y), (v2.x, v2.y), (0, 0, 255), thickness=2)
-            cv.circle(final_results, (v1.x, v1.y), 4, (0, 0, 0), cv.FILLED)
-            cv.circle(final_results, (v2.x, v2.y), 4, (0, 0, 0), cv.FILLED)
-
-    return vertices_list, backend, final_results
+    return vertices_list
 
 
 def find_nearest_vertex(point: np.ndarray, vertices_list: list) -> int:
@@ -174,3 +148,4 @@ def point_within_radius(point: np.ndarray, vertex: Vertex, radius_factor: float)
 
 def distance_L2(point1: Tuple[float, float], point2: Tuple[float, float]) -> float:
     return sqrt((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2)
+

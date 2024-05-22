@@ -60,7 +60,8 @@ export function createGraph(data) {
 export function createDistanceGraph(path, distance) {
     let delay = 500; // delay in milliseconds
     restoreGraph()
-    document.querySelector('.distance-span').innerHTML = distance === -1 ? 'There is no such path' : distance
+
+    document.querySelector('.distance-block').innerHTML = distance === -1 ? 'There is no such path' : `Distance: ${distance}`
     path.reverse()
     function addEdgeWithDelay(index) {
         if (index < path.length) {
@@ -126,12 +127,14 @@ export function createDistanceGraph(path, distance) {
 }
 
 export function createMst(data) {
-    let delay = 200;
+    let delay = 300;
     restoreGraph()
+    edges.forEach(e => console.log(e))
     function updateColor(index) {
         if (index < data.length) {
             let edgeIndex = data[index];
             let edge = edges.get(edgeIndex);
+            console.log(edgeIndex, edge)
             edge.color = '#FF9843';
             edges.update(edge);
             setTimeout(() => {
